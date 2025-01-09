@@ -1,0 +1,40 @@
+@font-face {
+    font-family: "Chewy";
+    src: url(Chewy-Regular.ttf);
+}
+.backgroundColor {
+   -fx-background-color: linear-gradient(to bottom, #86AEE9, #09316D);
+   -fx-background-image: url("TopRight.png"),url("BottomLeft.png");
+   -fx-background-position: 
+        top right, 
+        bottom left;
+    -fx-background-repeat: 
+        no-repeat, 
+        no-repeat;
+    -fx-background-size: 150px ;
+}
+
+.rectangle {
+    -fx-fill: #D9D9D9; 
+    -fx-effect: dropshadow(gaussian, black, 20, 0, 5, 5);
+}
+
+.Buttons{
+   -fx-background-color: linear-gradient(to bottom, #1F60C1, #8D9CB3); 
+   -fx-background-radius: 28;
+   -fx-border-radius: 28;
+   -fx-cursor: hand ;
+}
+
+.title{
+    -fx-font-family:"Chewy";
+
+}
+
+.textField {
+    -fx-max-width: 350px; 
+    -fx-background-radius: 28;
+    -fx-border-radius: 28; 
+    -fx-padding: 10; 
+    -fx-border-color: transparent; 
+}
