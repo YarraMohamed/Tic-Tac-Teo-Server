@@ -28,7 +28,7 @@ public class StopServerAndStatisticsController implements Initializable {
     @FXML
     private Text statisticsTitle;
     @FXML
-    private BarChart<?, ?> userStatusBarChart;
+    private BarChart<String, Integer> userStatusBarChart;
     @FXML
     private NumberAxis numberAxis;
     @FXML
@@ -63,16 +63,20 @@ public class StopServerAndStatisticsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        XYChart.Series series = new XYChart.Series<>();
-        series.getData().add(new XYChart.Data<>("Online", 2));
-        series.getData().add(new XYChart.Data<>("Offline", 10));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        series.getData().add(new XYChart.Data<>(" ", 0));
-        userStatusBarChart.getData().add(series);
+        XYChart.Series<String, Integer> onlineSeries = new XYChart.Series<>();
+        onlineSeries.setName("Online"); // make a variable to store the string
+        onlineSeries.getData().add(new XYChart.Data<>("Online", 10)); // make a variable to store the number
+        
+        
+        XYChart.Series<String, Integer> offlineSeries = new XYChart.Series<>();
+        offlineSeries.setName("Offline"); // same here
+        offlineSeries.getData().add(new XYChart.Data<>("Offline", 5));
+        
+        
+        userStatusBarChart.getData().addAll(onlineSeries, offlineSeries);
+        userStatusBarChart.setCategoryGap(250); // variables to store the number
+        userStatusBarChart.setBarGap(0.5); // same here
+    
     }    
     
 }
