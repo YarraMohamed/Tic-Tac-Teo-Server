@@ -18,21 +18,24 @@
             <Font name="System Bold" size="32.0" />
          </font>
       </Text>
-      <BarChart fx:id="userStatusBarChart" barGap="10.0" categoryGap="20.0" prefHeight="500.0" prefWidth="900.0" styleClass="barchart-title" stylesheets="Resources/ServerStyle.css" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="600.0">
+      <BarChart fx:id="userStatusBarChart" barGap="10.0" categoryGap="20.0" prefHeight="500.0" prefWidth="900.0" stylesheets="@../Resources/BarStyle.css" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="600.0">
         <xAxis>
-          <CategoryAxis fx:id="categoryAxis" prefHeight="31.0" prefWidth="605.0" stylesheets="Resources/ServerStyle.css" tickLabelFill="WHITE" tickLabelGap="20.0">
+          <CategoryAxis fx:id="categoryAxis" endMargin="0.0" prefHeight="31.0" prefWidth="605.0" startMargin="0.0" stylesheets="@../Resources/BarStyle.css" tickLabelFill="WHITE" tickLabelGap="0.0">
                <tickLabelFont>
                   <Font name="System Bold" size="22.0" />
-               </tickLabelFont></CategoryAxis>
+               </tickLabelFont>
+               <padding>
+                  <Insets left="50.0" right="50.0" />
+               </padding></CategoryAxis>
         </xAxis>
         <yAxis>
-          <NumberAxis fx:id="numberAxis" autoRanging="false" side="LEFT" stylesheets="Resources/ServerStyle.css" tickLabelFill="WHITE" tickLength="12.0" upperBound="50.0">
+          <NumberAxis fx:id="numberAxis" autoRanging="false" side="LEFT" tickLabelFill="WHITE" tickLength="12.0" upperBound="50.0">
                <tickLabelFont>
                   <Font name="System Bold" size="14.0" />
                </tickLabelFont></NumberAxis>
         </yAxis>
          <padding>
-            <Insets bottom="60.0" />
+            <Insets bottom="80.0" />
          </padding>
       </BarChart>
       <ImageView fitHeight="634.0" fitWidth="662.0" layoutX="330.0" layoutY="-177.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="-178.0" AnchorPane.topAnchor="-177.0" fx:id="xoImageUpperRightCorner">
