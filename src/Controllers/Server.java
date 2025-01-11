@@ -4,6 +4,8 @@ package Controllers;
    make the O lowercased. This hsould be done in all files! 
 
    Add comments on the code. 
+
+  WARNING: serevr doesn't shut down on window close  
 */
 // package server; // commented it till we figure out where to put the Server.java file
 
