@@ -1,4 +1,7 @@
-// package server;
+/* To add: 
+    - Drop shadows to the button 
+    - Same gradient in client-side
+*/
 package Controllers; 
 
 import java.io.IOException;

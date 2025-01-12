@@ -1,7 +1,5 @@
 package Controllers;
 
-// package server; // commented it till we figure out where to put the GameClientHandler.java file
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -1,14 +1,15 @@
+/* To change: 
+    - in catch(IOException iOException), iOException needs to be ioException
+    make the O lowercased. OR make it 'e'. This hsould be done in all files! 
+    
+   To add: 
+    - Comments on the code. 
+    - Print statements in try blocks
+*/
+
 package Controllers;
 
-/* Note to myself: in catch(IOException iOException), iOException needs to be ioException
-   make the O lowercased. This hsould be done in all files! 
-
-   Add comments on the code. 
-
-  WARNING: serevr doesn't shut down on window close  
-*/
-// package server; // commented it till we figure out where to put the Server.java file
-
+import database.DatabaseConnection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,6 +30,7 @@ public class Server {
     private void startServer() {
         try {
             serverSocket = new ServerSocket(port);
+            DatabaseConnection.getDBConnection();
             
             new Thread(() -> { 
                 try {
@@ -66,6 +68,7 @@ public class Server {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
             }
+            DatabaseConnection.closeDBConnection();
         } catch(IOException iOException) {
             iOException.printStackTrace();
             System.out.println("Error stopping server on port " + port);
