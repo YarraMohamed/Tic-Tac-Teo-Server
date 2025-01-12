@@ -27,7 +27,7 @@ public class PlayerDAO {
     
        int result1 = insertPlayer.executeUpdate();
        
-       ResultSet keys = insertPlayer.getGeneratedKeys();
+       ResultSet keys = insertPlayer.getGeneratedKeys();  
        if (keys.next()) {
          generatedID = keys.getInt(1);
         player.setId(generatedID);    
@@ -60,7 +60,7 @@ public class PlayerDAO {
         getPlayer.setString(1,player.getName());
         getPlayer.setString(2, player.getPassword());
         
-        ResultSet set = getPlayer.executeQuery();
+        ResultSet set = getPlayer.executeQuery(); 
         
         if(set.next()){
             playerID = set.getInt("ID");
@@ -79,6 +79,42 @@ public class PlayerDAO {
             finalResult = true;
         }
         return finalResult;
+    }
+    
+    
+    // Method to get the number of players who are currently active (online)
+    public static int getNumberOfOnlinePlayers() throws SQLException {
+        int numberOfOnlinePlayers = 0;
+        // Use an alias "ACTIVE_COUNT" for the column the query returns
+        String countOnlinePlayersQuery = "SELECT COUNT (*) AS ACTIVE_COUNT FROM PLAYERSTATUS WHERE ACTIVE=TRUE";
+        
+        con = DatabaseConnection.getDBConnection();
+        // Use try-with-resources block to prevent resource leaks and avoid calling close() explicitly
+        try (PreparedStatement preparedStatement = con.prepareStatement(countOnlinePlayersQuery);
+            ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                numberOfOnlinePlayers = resultSet.getInt("ACTIVE_COUNT");
+            }
+        }
+ 
+        return numberOfOnlinePlayers;
+    }
+    
+    
+    // Method to get the number of players who are currently inactive (offline)
+    public static int getNumberOfOfflinePlayers() throws SQLException {
+        int numberOfOfflinePlayers = 0;
+        String countOfflinePlayersQuery = "SELECT COUNT (*) AS ACTIVE_COUNT FROM PLAYERSTATUS WHERE ACTIVE=FALSE";
+        
+        con = DatabaseConnection.getDBConnection();
+        try (PreparedStatement preparedStatement = con.prepareStatement(countOfflinePlayersQuery);
+            ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                numberOfOfflinePlayers = resultSet.getInt("ACTIVE_COUNT");
+            }
+        }
+        
+        return numberOfOfflinePlayers;
     }
 }
       
