@@ -1,0 +1,41 @@
+@font-face {
+    font-family: "Chewy";
+    src: url(Chewy-Regular.ttf);
+}
+
+
+.gradient-background {
+    -fx-background-color: linear-gradient(
+            from 100% 100% to 0% 0%, 
+            #09316D 23%, 
+            #86AEE9 100%
+        );
+}
+
+
+.title {
+    -fx-font-family: "Chewy";
+    
+    -fx-font-size: 80px;
+}
+
+
+.button {
+    -fx-background-color: linear-gradient(
+            to bottom, 
+            #1F60C1 0%, 
+            #8D9CB3 100%
+        );
+    
+    -fx-background-radius: 28;
+    -fx-border-radius: 28;
+    -fx-effect: dropshadow(gaussian, black, 20, 0, 5, 5);
+    
+    -fx-font-family: "Chewy";
+    -fx-font-size: 42px;
+
+}
+
+
+
+
