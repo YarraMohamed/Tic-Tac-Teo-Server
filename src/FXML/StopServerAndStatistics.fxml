@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -11,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="stopServerAndStatisticsScreen" prefHeight="543.0" prefWidth="649.0" styleClass="gradient-background" stylesheets="Resources/ServerStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StopServerAndStatisticsController">
+<AnchorPane fx:id="stopServerAndStatisticsScreen" prefHeight="543.0" prefWidth="649.0" styleClass="gradient-background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StopServerAndStatisticsController">
    <children>
-      <Text fx:id="statisticsTitle" fill="WHITE" layoutX="14.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Tic-Tac-Toe Statistics" textAlignment="CENTER" wrappingWidth="661.150390625" AnchorPane.bottomAnchor="500.0" AnchorPane.leftAnchor="600.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="100.0">
+      <Text fx:id="statisticsTitle" fill="WHITE" layoutX="102.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Tic-Tac-Toe Statistics" textAlignment="CENTER" wrappingWidth="661.150390625" AnchorPane.bottomAnchor="909.78125" AnchorPane.leftAnchor="102.0" AnchorPane.rightAnchor="998.0" AnchorPane.topAnchor="87.640625">
          <font>
             <Font name="System Bold" size="32.0" />
          </font>
@@ -40,7 +41,7 @@
       </BarChart>
       <ImageView fitHeight="634.0" fitWidth="662.0" layoutX="330.0" layoutY="-177.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="-178.0" AnchorPane.topAnchor="-177.0" fx:id="xoImageUpperRightCorner">
          <image>
-            <Image url="Resources/XO.png" />
+            <Image url="@../Resources/XO.png" />
          </image>
       </ImageView>
       <Button fx:id="stopServerButton" layoutX="290.0" layoutY="418.0" mnemonicParsing="false" onAction="#handleStopServerButtonAction" prefHeight="39.0" prefWidth="334.0" stylesheets="Resources/ServerStyle.css" text="Stop Server" textFill="WHITE" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="40.0">
@@ -49,4 +50,8 @@
          </font>
       </Button>
    </children>
+   <stylesheets>
+      <URL value="@../Resources/BarStyle.css" />
+      <URL value="@../Resources/ServerStyle.css" />
+   </stylesheets>
 </AnchorPane>
