@@ -34,8 +34,8 @@ public class GameClientHandler extends Thread {
             printStream = new PrintStream(gameClientSocket.getOutputStream());
             GameClientHandler.gameClientsVector.add(this);
             start(); 
-        } catch (IOException ioException) {
-          ioException.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
           System.out.println("Error initializing streams for client");
         }
     }
@@ -50,8 +50,8 @@ public class GameClientHandler extends Thread {
                     GameClientHandler.gameClientsVector.remove(this);
                     break;
                 }
-            } catch(IOException iOException) {
-                iOException.printStackTrace();
+            } catch(IOException e) {
+                e.printStackTrace();
                 System.out.println("Error while trying to establish a connection with client.");
             } finally {
                 closeResources();
@@ -65,8 +65,8 @@ public class GameClientHandler extends Thread {
             bufferedReader.close();
             printStream.close();
             gameClientSocket.close();
-        } catch(IOException iOException) {
-            iOException.printStackTrace(); 
+        } catch(IOException e) {
+            e.printStackTrace(); 
             System.out.println("Error while closing resources.");
         }
     }
