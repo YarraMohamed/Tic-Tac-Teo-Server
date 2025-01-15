@@ -19,6 +19,7 @@ public class DatabaseConnection {
              try {
             DriverManager.registerDriver(new ClientDriver());
             con = DriverManager.getConnection("jdbc:derby://localhost:1527/TicTacTeo","root","root");
+            System.out.println("DB Started");
         } catch (SQLException ex) {
             System.out.println("Error connecting to database");
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
