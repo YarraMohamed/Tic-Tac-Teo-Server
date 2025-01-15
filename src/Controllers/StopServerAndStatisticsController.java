@@ -1,20 +1,11 @@
-/* To add: 
-    - logic to close the server when close window is pressed
-    - Drop shadows to the button 
-    - Same gradient in client-side
-*/
 package Controllers; 
 
 import database.PlayerDAO;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -27,10 +18,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 
-public class StopServerAndStatisticsController implements Initializable {
+public class StopServerAndStatisticsController {
 
     @FXML
     private AnchorPane stopServerAndStatisticsScreen;
@@ -61,22 +51,23 @@ public class StopServerAndStatisticsController implements Initializable {
     
     private Server serverInstance;
     
-    // private Stage stage;
+    private Stage stage;
     
     
     public void setServerInstance(Server serveInstance) {
         this.serverInstance = serveInstance;
     }
     
-    // I was trying to handle shutting down the server when window is closed
-    /*public void setStage(Stage stage) {
+    // Acessing the stage to shut down the server on window close
+    public void setStage(Stage stage) {
         this.stage = stage;
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-          public void handle(WindowEvent we) {
-             serverInstance.stopServer();
-          }
+        // EventHandler is a functional interface and can therefore be used as the assignment target for a lambda expression
+        stage.setOnCloseRequest(closeStageEvent -> {
+              if (serverInstance != null) {
+                  serverInstance.stopServer();
+              }  
         });
-    }*/
+    }
     
     
     @FXML
@@ -93,9 +84,9 @@ public class StopServerAndStatisticsController implements Initializable {
         }
     }
 
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+
+    @FXML
+    public void initialize() {
         updateBarChart();
     }
     
@@ -104,7 +95,7 @@ public class StopServerAndStatisticsController implements Initializable {
     // Method to create the bar chart to show the number of online/offline players
     // Will be called in updateBarChart()
     private void createBarChart() {
-        /* WARNING: NOT ABSOLUTELY SURE WE NEED IT*/
+        /* WARNING: NOT ABSOLUTELY SURE WE NEED IT */
         userStatusBarChart.getData().clear(); // Call clear() to dynamically update the bar chart as clients connect and disconnect
         
         XYChart.Series<String, Integer> onlineSeries = new XYChart.Series<>();
