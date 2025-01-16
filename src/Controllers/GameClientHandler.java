@@ -45,6 +45,7 @@ public class GameClientHandler extends Thread {
         while(true) {
             try {
                 String message = bufferedReader.readLine();
+                System.out.println("message " + message);
                 if (message == null) {
                     System.out.println("Client is disconnecting.");
                     GameClientHandler.gameClientsVector.remove(this);
