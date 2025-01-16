@@ -8,7 +8,11 @@ public class Player {
     private int score ;
     
     public Player(){
-        this.score=0;
+    }
+    
+    public Player(String name,String password){
+        this.name=name;
+        this.password=password;
     }
     
     public Player(int id,String name,String email,String password,int score){
