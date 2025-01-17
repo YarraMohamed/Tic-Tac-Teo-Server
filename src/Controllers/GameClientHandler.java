@@ -41,7 +41,7 @@ public class GameClientHandler extends Thread {
     }
     
 
-    private void handleClient() {
+    /*private void handleClient() {
         while(true) {
             try {
                 String message = bufferedReader.readLine();
@@ -58,9 +58,29 @@ public class GameClientHandler extends Thread {
                 closeResources();
             }
         }
-    }
-
+    }*/
     
+private void handleClient() {
+    try {
+        String message;
+        while ((message = bufferedReader.readLine()) != null) {
+            System.out.println(message);
+            String response = RequestRouter.routeRequest(message, this);
+            printStream.println(response);
+            printStream.flush();
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.out.println("Error while trying to establish a connection with client.");
+    } finally {
+        System.out.println("Client is disconnecting.");
+        closeResources();
+        GameClientHandler.gameClientsVector.remove(this);
+    }
+}
+
+
+   
     private void closeResources() {
         try {
             bufferedReader.close();
