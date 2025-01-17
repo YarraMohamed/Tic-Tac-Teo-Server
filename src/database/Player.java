@@ -15,12 +15,10 @@ public class Player {
         this.password=password;
     }
     
-    public Player(int id,String name,String email,String password,int score){
-        this.id=id;
+    public Player(String name,String email,String password){
         this.name=name;
         this.email=email;
         this.password=password;
-        this.score=score;
     }
 
     public int getId() {

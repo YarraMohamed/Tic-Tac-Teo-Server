@@ -9,7 +9,6 @@ public class PlayerDAO {
     
     private static Connection con ;
     
-    
     public static boolean signUp(Player player) throws SQLException{
         
         con = DatabaseConnection.getDBConnection();
@@ -56,7 +55,6 @@ public class PlayerDAO {
         PreparedStatement getPlayer = con.prepareStatement(
             "SELECT * FROM PLAYER WHERE NAME=? AND PASSWORD=?"
         );
-        
         getPlayer.setString(1,player.getName());
         getPlayer.setString(2, player.getPassword());
         
