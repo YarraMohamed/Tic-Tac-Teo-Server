@@ -1,5 +1,6 @@
 package database;
 
+import Controllers.StopServerAndStatisticsController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,6 +49,7 @@ public class PlayerDAO {
          json.put("response", "Failed");
       }
       
+      StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs up
       return json.toString();
       
     }
@@ -84,6 +86,8 @@ public class PlayerDAO {
              json.put("response", "Success");
              json.put("Player_ID", playerID);
         }
+        
+        StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs in
         return json.toString();
     }
     
@@ -121,7 +125,7 @@ public class PlayerDAO {
         }
         
         return numberOfOfflinePlayers;
-    }
+    }  
 }
       
 
