@@ -4,15 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.json.JSONObject;
 
 public class PlayerDAO {
     
     private static Connection con ;
     
-    public static boolean signUp(Player player) throws SQLException{
+    public static String signUp(Player player) throws SQLException{
         
+        JSONObject json = new JSONObject();
+  
         con = DatabaseConnection.getDBConnection();
-        boolean finalResult = false;
         int generatedID = 0;
         
         PreparedStatement insertPlayer = con.prepareStatement(
@@ -29,7 +31,7 @@ public class PlayerDAO {
        ResultSet keys = insertPlayer.getGeneratedKeys();  
        if (keys.next()) {
          generatedID = keys.getInt(1);
-        player.setId(generatedID);    
+         player.setId(generatedID);    
        }
        
       PreparedStatement insertStatus = con.prepareStatement(
@@ -40,16 +42,21 @@ public class PlayerDAO {
       int result2 = insertStatus.executeUpdate();
 
       if (result1 > 0 && result2 > 0) {
-         finalResult = true;
+        json.put("response", "Success");
+        json.put("Player_ID", generatedID);
+      }else{
+         json.put("response", "Failed");
       }
-      return finalResult;
+      
+      return json.toString();
       
     }
     
-    public static boolean signIn(Player player) throws SQLException{
+    public static String signIn(Player player) throws SQLException{
+        
+        JSONObject json = new JSONObject();
         
         con = DatabaseConnection.getDBConnection();
-        boolean finalResult=false;
         int playerID=0;
         
         PreparedStatement getPlayer = con.prepareStatement(
@@ -64,7 +71,7 @@ public class PlayerDAO {
             playerID = set.getInt("ID");
             player.setId(playerID);
         } else {
-            return finalResult;
+            json.put("response", "Failed");
         }
         
         PreparedStatement insertStatus = con.prepareStatement(
@@ -74,9 +81,10 @@ public class PlayerDAO {
         
         int result = insertStatus.executeUpdate();
         if(result > 0){
-            finalResult = true;
+             json.put("response", "Success");
+             json.put("Player_ID", playerID);
         }
-        return finalResult;
+        return json.toString();
     }
     
     

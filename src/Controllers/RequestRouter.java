@@ -1,15 +1,27 @@
 package Controllers;
 
+import org.json.JSONObject;
+
 public class RequestRouter {
     
     public static String routeRequest(String request, GameClientHandler gameClient) {
-        String[] parts = request.split(":");
-        String requestType = parts[0];
+        
+        JSONObject jsonReceived = new JSONObject(request);
+        String requestType = jsonReceived.getString("requestType");
+        System.out.println(requestType);
+
+        String username = jsonReceived.optString("username");
+        String password = jsonReceived.optString("password");
+        String email = jsonReceived.optString("email");
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(email);
+      
         switch (requestType) {
-            case "signin":
-                return new RequestHandler().signInHandle(parts[1], parts[2]); 
-            case "signup":
-                return new RequestHandler().signUpHandle(parts[1], parts[2], parts[3]) ;
+            case "SIGN_IN":
+                return new RequestHandler().signInHandle(username, password); 
+            case "SIGN_UP":
+                return new RequestHandler().signUpHandle(username, email ,password) ;
             default:
                 return "Error: Invalid request type.";
         }
