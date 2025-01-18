@@ -110,6 +110,7 @@ public class PlayerDAO {
         } else {
             json.put("response", "Failed");
         }
+        StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs out
         return json.toString();
     }
     
