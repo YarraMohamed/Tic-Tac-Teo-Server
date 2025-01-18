@@ -14,7 +14,6 @@ public class RequestHandler {
             Player player = new Player(name,password);
             
             String result = PlayerDAO.signIn(player);
-            System.out.println("PlayerDOA result"+result);
             return result ;
         } catch (SQLException ex) {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -28,7 +27,17 @@ public class RequestHandler {
             Player player = new Player(name,email,password);
             
             String result = PlayerDAO.signUp(player);
-            System.out.println("PlayerDOA result "+result);
+            return result ;
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return "Database Error";
+        }  
+    }
+    
+    public String signOutHandle(int playerID){
+        try {
+           
+            String result = PlayerDAO.signOut(playerID);
             return result ;
         } catch (SQLException ex) {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
