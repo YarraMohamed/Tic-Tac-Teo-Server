@@ -73,9 +73,10 @@ private void handleClient() {
         e.printStackTrace();
         System.out.println("Error while trying to establish a connection with client.");
     } finally {
-        System.out.println("Client is disconnecting.");
         closeResources();
         GameClientHandler.gameClientsVector.remove(this);
+        System.out.println("Client is disconnecting.");
+
     }
 }
 
