@@ -1,5 +1,6 @@
 package Controllers;
 
+import database.PlayerDAO;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,47 +42,27 @@ public class GameClientHandler extends Thread {
     }
     
 
-    /*private void handleClient() {
-        while(true) {
-            try {
-                String message = bufferedReader.readLine();
-                System.out.println("message " + message);
-                if (message == null) {
-                    System.out.println("Client is disconnecting.");
-                    GameClientHandler.gameClientsVector.remove(this);
-                    break;
-                }
-            } catch(IOException e) {
-                e.printStackTrace();
-                System.out.println("Error while trying to establish a connection with client.");
-            } finally {
-                closeResources();
-            }
-        }
-    }*/
     
-private void handleClient() {
-    try {
-        String message;
-        while ((message = bufferedReader.readLine()) != null) {
-            System.out.println(message);
-            String response = RequestRouter.routeRequest(message, this);
-            printStream.println(response);
-            printStream.flush();
+    private void handleClient() {
+        try {
+            String message;
+            while ((message = bufferedReader.readLine()) != null) {
+                System.out.println(message);
+                String response = RequestRouter.routeRequest(message, this);
+                printStream.println(response);
+                printStream.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error while trying to establish a connection with client.");
+        } finally {
+            closeResources();
+            GameClientHandler.gameClientsVector.remove(this);
+            //System.out.println("Client is disconnecting."); // Commented it as I think it's unsuitable message for what happens here
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        System.out.println("Error while trying to establish a connection with client.");
-    } finally {
-        closeResources();
-        GameClientHandler.gameClientsVector.remove(this);
-        System.out.println("Client is disconnecting.");
-
     }
-}
 
 
-   
     private void closeResources() {
         try {
             bufferedReader.close();
