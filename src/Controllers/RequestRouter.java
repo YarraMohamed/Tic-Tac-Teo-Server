@@ -3,7 +3,7 @@ package Controllers;
 import org.json.JSONObject;
 
 public class RequestRouter {
-    
+   
     public static String routeRequest(String request, GameClientHandler gameClient) {
         
         JSONObject jsonReceived = new JSONObject(request);
@@ -13,14 +13,16 @@ public class RequestRouter {
         String password = jsonReceived.optString("password");
         String email = jsonReceived.optString("email");
         int playerID = jsonReceived.optInt("Player_ID");
+        
+         RequestHandler requestHandler = new RequestHandler();
       
         switch (requestType) {
             case "SIGN_IN":
-                return new RequestHandler().signInHandle(username, password); 
+                return requestHandler.signInHandle(username, password); 
             case "SIGN_UP":
-                return new RequestHandler().signUpHandle(username, email ,password) ;
+                return requestHandler.signUpHandle(username, email ,password) ;
             case "SIGN_OUT":
-                return new RequestHandler().signOutHandle(playerID);
+                return requestHandler.signOutHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }
