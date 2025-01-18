@@ -1,5 +1,6 @@
 package Controllers;
 
+import database.PlayerDAO;
 import org.json.JSONObject;
 
 public class RequestRouter {
@@ -21,7 +22,7 @@ public class RequestRouter {
             case "SIGN_IN":
                 return new RequestHandler().signInHandle(username, password); 
             case "SIGN_UP":
-                return new RequestHandler().signUpHandle(username, email ,password) ;
+                return new RequestHandler().signUpHandle(username, email ,password) ;     
             default:
                 return "Error: Invalid request type.";
         }
