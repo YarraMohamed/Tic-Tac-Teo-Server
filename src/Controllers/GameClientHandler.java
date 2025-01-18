@@ -58,7 +58,7 @@ public class GameClientHandler extends Thread {
         } finally {
             closeResources();
             GameClientHandler.gameClientsVector.remove(this);
-            System.out.println("Client is disconnecting.");
+            //System.out.println("Client is disconnecting."); // Commented it as I think it's unsuitable message for what happens here
         }
     }
 
