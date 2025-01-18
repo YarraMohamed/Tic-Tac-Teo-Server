@@ -56,13 +56,13 @@ public class GameClientHandler extends Thread {
             e.printStackTrace();
             System.out.println("Error while trying to establish a connection with client.");
         } finally {
-            System.out.println("Client is disconnecting.");
             closeResources();
             GameClientHandler.gameClientsVector.remove(this);
+            System.out.println("Client is disconnecting.");
         }
     }
 
-  
+
     private void closeResources() {
         try {
             bufferedReader.close();
