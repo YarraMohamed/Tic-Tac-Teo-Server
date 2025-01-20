@@ -152,7 +152,7 @@ public class PlayerDAO {
         return numberOfOfflinePlayers;
     }  
     
-  public static String getPlayersListExcludingCurrent(int currentPlayerID) throws SQLException {
+ public static String getPlayersListExcludingCurrent(int currentPlayerID) throws SQLException {
     JSONObject json = new JSONObject();
     JSONArray playersArray = new JSONArray();
 
@@ -162,10 +162,8 @@ public class PlayerDAO {
     // Query: Join PLAYERSTATUS with PLAYER table to get player names and only active players
     String getPlayersQuery = "SELECT p.ID, p.NAME FROM PLAYERSTATUS ps " +
                              "JOIN PLAYER p ON ps.PLAYER_ID = p.ID " +
-                             "WHERE ps.ACTIVE = TRUE AND p.ID != ?";
+                             "WHERE ps.ACTIVE = TRUE AND p.ID != ?";  // Exclude current player
     
-  
-
     // Prepare statement and execute the query
     PreparedStatement preparedStatement = con.prepareStatement(getPlayersQuery);
     preparedStatement.setInt(1, currentPlayerID); // Exclude current player
