@@ -1,19 +1,21 @@
 package database;
 
+import Controllers.StopServerAndStatisticsController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.json.JSONObject;
 
 public class PlayerDAO {
     
     private static Connection con ;
     
-    
-    public static boolean signUp(Player player) throws SQLException{
+    public static String signUp(Player player) throws SQLException{
         
+        JSONObject json = new JSONObject();
+  
         con = DatabaseConnection.getDBConnection();
-        boolean finalResult = false;
         int generatedID = 0;
         
         PreparedStatement insertPlayer = con.prepareStatement(
@@ -30,7 +32,7 @@ public class PlayerDAO {
        ResultSet keys = insertPlayer.getGeneratedKeys();  
        if (keys.next()) {
          generatedID = keys.getInt(1);
-        player.setId(generatedID);    
+         player.setId(generatedID);    
        }
        
       PreparedStatement insertStatus = con.prepareStatement(
@@ -41,22 +43,27 @@ public class PlayerDAO {
       int result2 = insertStatus.executeUpdate();
 
       if (result1 > 0 && result2 > 0) {
-         finalResult = true;
+        json.put("response", "Success");
+        json.put("Player_ID", generatedID);
+      }else{
+         json.put("response", "Failed");
       }
-      return finalResult;
+      
+      StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs up
+      return json.toString();
       
     }
     
-    public static boolean signIn(Player player) throws SQLException{
+    public static String signIn(Player player) throws SQLException{
+        
+        JSONObject json = new JSONObject();
         
         con = DatabaseConnection.getDBConnection();
-        boolean finalResult=false;
         int playerID=0;
         
         PreparedStatement getPlayer = con.prepareStatement(
             "SELECT * FROM PLAYER WHERE NAME=? AND PASSWORD=?"
         );
-        
         getPlayer.setString(1,player.getName());
         getPlayer.setString(2, player.getPassword());
         
@@ -66,7 +73,7 @@ public class PlayerDAO {
             playerID = set.getInt("ID");
             player.setId(playerID);
         } else {
-            return finalResult;
+            json.put("response", "Failed");
         }
         
         PreparedStatement insertStatus = con.prepareStatement(
@@ -76,11 +83,36 @@ public class PlayerDAO {
         
         int result = insertStatus.executeUpdate();
         if(result > 0){
-            finalResult = true;
+             json.put("response", "Success");
+             json.put("Player_ID", playerID);
+        } else {
+            json.put("response", "Failed");
         }
-        return finalResult;
+        
+        StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs in
+        return json.toString();
     }
     
+    public static String signOut(int playerID) throws SQLException{
+        
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "UPDATE PLAYERSTATUS SET ACTIVE=FALSE, BUSY=FALSE WHERE PLAYER_ID=?"
+        );
+        insertStatus.setInt(1, playerID);
+        
+        int result = insertStatus.executeUpdate();
+        if(result > 0){
+             json.put("response", "Success");
+        } else {
+            json.put("response", "Failed");
+        }
+        StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs out
+        return json.toString();
+    }
     
     // Method to get the number of players who are currently active (online)
     public static int getNumberOfOnlinePlayers() throws SQLException {
@@ -115,7 +147,7 @@ public class PlayerDAO {
         }
         
         return numberOfOfflinePlayers;
-    }
+    }  
 }
       
 
