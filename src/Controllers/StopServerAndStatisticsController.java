@@ -3,6 +3,7 @@ package Controllers;
 import database.PlayerDAO;
 import java.io.IOException;
 import java.sql.SQLException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,8 @@ import javafx.stage.Stage;
 
 public class StopServerAndStatisticsController {
 
+    private static StopServerAndStatisticsController instance;
+    
     @FXML
     private AnchorPane stopServerAndStatisticsScreen;
     
@@ -58,6 +61,7 @@ public class StopServerAndStatisticsController {
         this.serverInstance = serveInstance;
     }
     
+    
     // Acessing the stage to shut down the server on window close
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -70,8 +74,16 @@ public class StopServerAndStatisticsController {
     }
     
     
+    public static StopServerAndStatisticsController getInstance() {
+        if (instance == null) {
+            instance = new StopServerAndStatisticsController();
+        } 
+        return instance;
+    }
+    
+    
     @FXML
-    private void handleStopServerButtonAction(ActionEvent stopServerEvent) {
+    private void handleStopServerButtonAction(ActionEvent stopServerEvent) { 
         if (serverInstance != null) {
             serverInstance.stopServer();
         }
@@ -87,15 +99,27 @@ public class StopServerAndStatisticsController {
 
     @FXML
     public void initialize() {
-        updateBarChart();
+        instance = this; 
+        fetchDataForBarChart();
     }
     
     
+    // Static method to be accessed by class name in PlayerDAO to update chart on
+    // sing-in, sing-up, and sing-out
+    public static void notifyBarChart(){
+        // Use Platform.runLater() so modification to the UI happen on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            if (instance != null) {
+                instance.fetchDataForBarChart();
+            }
+        });
+    }
+    
 
     // Method to create the bar chart to show the number of online/offline players
-    // Will be called in updateBarChart()
+    // Will be called in fetchDataForBarChart()
     private void createBarChart() {
-        /* WARNING: NOT ABSOLUTELY SURE WE NEED IT */
+        
         userStatusBarChart.getData().clear(); // Call clear() to dynamically update the bar chart as clients connect and disconnect
         
         XYChart.Series<String, Integer> onlineSeries = new XYChart.Series<>();
@@ -115,7 +139,7 @@ public class StopServerAndStatisticsController {
     
     
     // Method to update the bar chart with the actual numbers of online/offline players that we get from the database
-    private void updateBarChart() {
+    private void fetchDataForBarChart() {
         try {
             numberOfOnlinePlayers = PlayerDAO.getNumberOfOnlinePlayers();
             numberOfOfflinePlayers = PlayerDAO.getNumberOfOfflinePlayers();
