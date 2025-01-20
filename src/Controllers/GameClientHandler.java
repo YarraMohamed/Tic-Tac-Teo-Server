@@ -64,7 +64,7 @@ private void handleClient() {
     try {
         String message;
         while ((message = bufferedReader.readLine()) != null) {
-            System.out.println(message);
+            /*System.out.println(message);*/
             String response = RequestRouter.routeRequest(message, this);
             printStream.println(response);
             printStream.flush();
@@ -75,7 +75,7 @@ private void handleClient() {
     } finally {
         closeResources();
         GameClientHandler.gameClientsVector.remove(this);
-        System.out.println("Client is disconnecting.");
+        /*System.out.println("Client is disconnecting.");*/
 
     }
 }
