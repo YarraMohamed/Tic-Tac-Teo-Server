@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="stopServerAndStatisticsScreen" prefHeight="543.0" prefWidth="649.0" styleClass="gradient-background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StopServerAndStatisticsController">
+<AnchorPane fx:id="stopServerAndStatisticsScreen" prefHeight="700.0" prefWidth="1300.0" styleClass="gradient-background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.StopServerAndStatisticsController">
    <children>
       <Text fx:id="statisticsTitle" fill="WHITE" layoutX="102.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="Tic-Tac-Toe Statistics" textAlignment="CENTER" wrappingWidth="661.150390625" AnchorPane.bottomAnchor="909.78125" AnchorPane.leftAnchor="102.0" AnchorPane.rightAnchor="998.0" AnchorPane.topAnchor="87.640625">
          <font>
