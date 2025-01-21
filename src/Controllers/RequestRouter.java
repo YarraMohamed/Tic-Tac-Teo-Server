@@ -24,6 +24,10 @@ public class RequestRouter {
                 return requestHandler.signUpHandle(username, email ,password) ;
             case "SIGN_OUT":
                 return requestHandler.signOutHandle(playerID);
+                case "GET_AVAILABLE_PLAYERS":
+                return requestHandler.getAvailablePlayersHandle(playerID);
+               // case "GET_ONLINE_PLAYERS":
+                //return requestHandler.getOnlinePlayersHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }
