@@ -15,6 +15,7 @@ public class GameClientHandler extends Thread {
     private static Vector<GameClientHandler> gameClientsVector = new Vector<>();
     private BufferedReader bufferedReader;
     private PrintStream printStream;
+    private int userID;
     
     
     public GameClientHandler(Socket gameClientSocket) {
@@ -60,6 +61,20 @@ public class GameClientHandler extends Thread {
             GameClientHandler.gameClientsVector.remove(this);
             //System.out.println("Client is disconnecting."); // Commented it as I think it's unsuitable message for what happens here
         }
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+    
+    public static PrintStream getClientEar(int Id) {
+        for (GameClientHandler c : gameClientsVector) {
+
+            if (Id == c.userID ) {
+                return c.printStream;
+            }
+        }
+        return null;
     }
 
 
