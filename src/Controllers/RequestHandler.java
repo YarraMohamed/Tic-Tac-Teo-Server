@@ -45,4 +45,15 @@ public class RequestHandler {
         }  
     }
     
+    public String userNameHandle(int playerID){
+        try {
+           
+            String result = PlayerDAO.userName(playerID);
+            return result ;
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return "Database Error";
+        }  
+    }
+    
 }
