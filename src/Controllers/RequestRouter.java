@@ -17,6 +17,7 @@ public class RequestRouter {
         int player2ID= jsonReceived.optInt("Player2_ID");
         String btnId=jsonReceived.optString("btn");
         
+        
          RequestHandler requestHandler = new RequestHandler();
       
         switch (requestType) {
@@ -31,6 +32,8 @@ public class RequestRouter {
                 return requestHandler.signOutHandle(playerID);
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
+            case "USER_NAME":
+                return requestHandler.userNameHandle(playerID);
             case "GET_AVAILABLE_PLAYERS":
                 return requestHandler.getAvailablePlayersHandle(playerID);
                // case "GET_ONLINE_PLAYERS":

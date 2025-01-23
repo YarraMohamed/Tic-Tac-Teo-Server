@@ -14,7 +14,7 @@ public class PlayerDAO {
     
     private static Connection con ;
     
-    public static String signUp(Player player) throws SQLException{
+    public static String signUp(Player player) throws SQLException {
         
         JSONObject json = new JSONObject();
   
@@ -41,7 +41,7 @@ public class PlayerDAO {
       PreparedStatement insertStatus = con.prepareStatement(
         "INSERT INTO PLAYERSTATUS(PLAYER_ID,ACTIVE,BUSY) VALUES (?,TRUE,FALSE)"
       );
-      
+
       insertStatus.setInt(1, generatedID);
       int result2 = insertStatus.executeUpdate();
 
@@ -116,6 +116,34 @@ public class PlayerDAO {
         StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs out
         return json.toString();
     }
+    
+    public static String userName(int playerID) throws SQLException{
+        
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "SELECT NAME,SCORE FROM PLAYER WHERE ID=?"
+        );
+        insertStatus.setInt(1, playerID);
+        
+        ResultSet result = insertStatus.executeQuery();
+        
+        if(result.next()){
+             json.put("response", "Success");
+             json.put("Name",result.getString("NAME"));
+             json.put("Score",result.getInt("SCORE"));
+        } else {
+            json.put("response", "Failed");
+        }
+        return json.toString();
+    }
+    
+    
+    
+    
+    
     
     // Method to get the number of players who are currently active (online)
     public static int getNumberOfOnlinePlayers() throws SQLException {

@@ -139,6 +139,7 @@ public class RequestHandler {
 
 
     
+
     public String getAvailablePlayersHandle(int currentPlayerID) {
         try {
             // Call DAO method to fetch the list of players excluding the current player
@@ -149,7 +150,18 @@ public class RequestHandler {
             return "Database Error";
         }
     }
-    
+   
+    public String userNameHandle(int playerID){
+        try {
+           
+            String result = PlayerDAO.userName(playerID);
+            return result ;
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return "Database Error";
+        }  
+    }
+
 //public String getOnlinePlayersHandle(int currentPlayerID) {
 //    // Fetch only online players except the current player
 //    List<Player> onlinePlayers = PlayerDAO.getOnlinePlayers(currentPlayerID);
