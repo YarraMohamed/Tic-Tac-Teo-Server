@@ -117,6 +117,34 @@ public class PlayerDAO {
         return json.toString();
     }
     
+    public static String userName(int playerID) throws SQLException{
+        
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "SELECT NAME,SCORE FROM PLAYER WHERE ID=?"
+        );
+        insertStatus.setInt(1, playerID);
+        
+        ResultSet result = insertStatus.executeQuery();
+        
+        if(result.next()){
+             json.put("response", "Success");
+             json.put("Name",result.getString("NAME"));
+             json.put("Score",result.getInt("SCORE"));
+        } else {
+            json.put("response", "Failed");
+        }
+        return json.toString();
+    }
+    
+    
+    
+    
+    
+    
     // Method to get the number of players who are currently active (online)
     public static int getNumberOfOnlinePlayers() throws SQLException {
         int numberOfOnlinePlayers = 0;

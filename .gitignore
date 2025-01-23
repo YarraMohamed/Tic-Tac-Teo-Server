@@ -10,3 +10,7 @@ derby.log
 derby.properties
 
 
+/JsonObjectModel/nbproject/private/
+/JsonObjectModel/build/
+/Gson/nbproject/private/
+/Gson/build/

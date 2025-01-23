@@ -29,6 +29,8 @@ public class RequestRouter {
                 return requestHandler.getAvailablePlayersHandle(playerID);
                // case "GET_ONLINE_PLAYERS":
                 //return requestHandler.getOnlinePlayersHandle(playerID);
+            case "USER_NAME":
+                return requestHandler.userNameHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }
