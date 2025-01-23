@@ -15,6 +15,7 @@ public class RequestRouter {
         String email = jsonReceived.optString("email");
         int playerID = jsonReceived.optInt("Player_ID");
         
+        
          RequestHandler requestHandler = new RequestHandler();
       
         switch (requestType) {
@@ -26,6 +27,10 @@ public class RequestRouter {
                 return requestHandler.signOutHandle(playerID);
             case "USER_NAME":
                 return requestHandler.userNameHandle(playerID);
+            case "GET_AVAILABLE_PLAYERS":
+                return requestHandler.getAvailablePlayersHandle(playerID);
+               // case "GET_ONLINE_PLAYERS":
+                //return requestHandler.getOnlinePlayersHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }
