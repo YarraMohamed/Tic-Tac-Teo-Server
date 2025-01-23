@@ -48,6 +48,7 @@ public class RequestHandler {
             return "Database Error";
         }  
     }
+    /*
     public String inGameHandle(int playerID, int player2Id, String btnId) {
         JSONObject responseJson = new JSONObject(); // Response JSON to be returned
 
@@ -82,7 +83,58 @@ public class RequestHandler {
         }
 
         return responseJson.toString(); // Return JSON response as a string
+    }*/
+    public String inGameHandle(int playerID, int player2Id, String btnId) {
+    JSONObject responseJson = new JSONObject(); // Response JSON to be returned
+
+    try {
+        // Validate button ID
+        if (btnId == null || btnId.isEmpty()) {
+            responseJson.put("response", "Error");
+            responseJson.put("message", "Invalid button ID.");
+            return responseJson.toString();
+        }
+
+        // Get PrintStream for Player 2
+        PrintStream p2Ear = GameClientHandler.getClientEar(player2Id);
+
+        if (p2Ear != null) {
+            // Create the JSON object to send to Player 2
+            JSONObject moveJson = new JSONObject();
+            moveJson.put("requestType", "MOVE");
+            moveJson.put("Player_ID", playerID);
+            moveJson.put("Player2_ID", player2Id);
+            moveJson.put("btn", btnId);
+
+            // Send move JSON to Player 2
+            System.out.println("Sending move from Player " + playerID + " to Player " + player2Id);
+            p2Ear.println(moveJson.toString());
+            p2Ear.flush();
+            p2Ear.println(moveJson.toString());
+            p2Ear.flush();
+            p2Ear.println(moveJson.toString());
+            p2Ear.flush();
+            System.out.println("move sent");
+
+            // Construct success response
+            responseJson.put("response", "Success");
+            responseJson.put("message", "Move sent successfully to Player 2.");
+        } else {
+            // Player 2 is not connected
+            responseJson.put("response", "Error");
+            responseJson.put("message", "Player 2 is not connected.");
+            System.err.println("Error: Player " + player2Id + " is not connected.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        // Construct error response for exceptions
+        responseJson.put("response", "Error");
+        responseJson.put("message", "An error occurred while processing the move: " + e.getMessage());
     }
+
+    return responseJson.toString(); // Return JSON response as a string
+}
+
 
 
 

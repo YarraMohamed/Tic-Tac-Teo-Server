@@ -67,15 +67,23 @@ public class GameClientHandler extends Thread {
         this.userID = userID;
     }
     
-    public static PrintStream getClientEar(int Id) {
-        for (GameClientHandler c : gameClientsVector) {
-
-            if (Id == c.userID ) {
-                return c.printStream;
-            }
+    public static PrintStream getClientEar(int id) {
+    // Iterate over all connected game clients
+    for (GameClientHandler c : gameClientsVector) {
+        // Print the userID for debugging purposes
+        System.out.println("Checking Player ID: " + c.userID);
+        
+        // If the given ID matches the userID, return the associated PrintStream
+        if (id == c.userID) {
+            return c.printStream;
         }
-        return null;
     }
+    
+    // If no client with the given ID is found, return null
+    System.out.println("No client found with ID: " + id);  // Debugging log
+    return null;
+}
+
 
 
     private void closeResources() {

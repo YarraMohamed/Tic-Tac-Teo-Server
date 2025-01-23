@@ -21,8 +21,10 @@ public class RequestRouter {
       
         switch (requestType) {
             case "SIGN_IN":
-                gameClient.setUserID(playerID);
-                return requestHandler.signInHandle(username, password); 
+                String req=requestHandler.signInHandle(username, password);
+                JSONObject reqJSONObject = new JSONObject(req);
+                gameClient.setUserID(reqJSONObject.getInt("Player_ID"));
+                return req; 
             case "SIGN_UP":
                 return requestHandler.signUpHandle(username, email ,password) ;
             case "SIGN_OUT":
