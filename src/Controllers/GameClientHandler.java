@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Vector;
+import org.json.JSONObject;
 
 
 public class GameClientHandler extends Thread {
@@ -41,26 +42,39 @@ public class GameClientHandler extends Thread {
         }
     }
     
-    private void handleClient() {
-        try {
+    private void handleClient(){
+        try{
             String message;
-            while ((message = bufferedReader.readLine()) != null) {
-                System.out.println(message);
-                String response = RequestRouter.routeRequest(message, this);
-                printStream.println(response);
-                printStream.flush();
+            while(!gameClientSocket.isClosed()){
+                try{
+                    message = bufferedReader.readLine();
+                    if(message==null){
+                        if(gameClientSocket.isClosed()){
+                            break;
+                        }
+                        continue;
+                    }
+                    String response = RequestRouter.routeRequest(message, this);
+                    printStream.println(response);
+                    printStream.flush();
+                    JSONObject request = new JSONObject(message);
+                    if (request.getString("requestType").equals("SIGN_OUT")) {
+                        break;
+                    }
+                }catch(IOException e){
+                    System.out.println("Cannot read from this socket");
+                    break;
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error while trying to establish a connection with client.");
-        } finally {
+        }catch(Exception e){
+            System.out.println("Cannot open connection");
+        } finally{
             closeResources();
-            GameClientHandler.gameClientsVector.remove(this);
-            //System.out.println("Client is disconnecting."); // Commented it as I think it's unsuitable message for what happens here
+            GameClientHandler.gameClientsVector.remove(this); 
+            System.out.println("Client is disconnected.");
         }
     }
-
-
+    
     private void closeResources() {
         try {
             bufferedReader.close();
