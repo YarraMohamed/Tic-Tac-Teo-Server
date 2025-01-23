@@ -14,7 +14,7 @@ public class PlayerDAO {
     
     private static Connection con ;
     
-    public static String signUp(Player player) throws SQLException{
+    public static String signUp(Player player) throws SQLException {
         
         JSONObject json = new JSONObject();
   
@@ -41,7 +41,7 @@ public class PlayerDAO {
       PreparedStatement insertStatus = con.prepareStatement(
         "INSERT INTO PLAYERSTATUS(PLAYER_ID,ACTIVE,BUSY) VALUES (?,TRUE,FALSE)"
       );
-      
+
       insertStatus.setInt(1, generatedID);
       int result2 = insertStatus.executeUpdate();
 

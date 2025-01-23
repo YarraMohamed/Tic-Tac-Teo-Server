@@ -41,8 +41,6 @@ public class GameClientHandler extends Thread {
         }
     }
     
-
-    
     private void handleClient() {
         try {
             String message;

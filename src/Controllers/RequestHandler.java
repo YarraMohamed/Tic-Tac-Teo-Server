@@ -47,7 +47,7 @@ public class RequestHandler {
             return "Database Error";
         }  
     }
-    
+
     public String getAvailablePlayersHandle(int currentPlayerID) {
         try {
             // Call DAO method to fetch the list of players excluding the current player
