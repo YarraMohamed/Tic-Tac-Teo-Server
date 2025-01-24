@@ -141,7 +141,28 @@ public class PlayerDAO {
     }
     
     
-    
+    public static String updateScore(int playerId,int score) throws SQLException{
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "UPDATE PLAYER set SCORE =SCORE +? WHERE ID=?"
+        );
+        insertStatus.setInt(1, score);
+        insertStatus.setInt(2, playerId);
+        
+        int result = insertStatus.executeUpdate();
+        
+        if(result>0){
+             json.put("response", "Success");
+             
+        } else {
+            json.put("response", "Failed");
+        }
+        return json.toString();
+
+    }
     
     
     

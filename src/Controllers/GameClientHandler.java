@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Vector;
+import org.json.JSONObject;
 
 
 public class GameClientHandler extends Thread {
@@ -60,6 +61,39 @@ public class GameClientHandler extends Thread {
             //System.out.println("Client is disconnecting."); // Commented it as I think it's unsuitable message for what happens here
         }
     }
+    /*
+   private void handleClient(){
+        try{
+            String message;
+            while(!gameClientSocket.isClosed()){
+                try{
+                    message = bufferedReader.readLine();
+                    if(message==null){
+                        if(gameClientSocket.isClosed()){
+                            break;
+                        }
+                        continue;
+                    }
+                    String response = RequestRouter.routeRequest(message, this);
+                    printStream.println(response);
+                    printStream.flush();
+                    JSONObject request = new JSONObject(message);
+                    if (request.getString("requestType").equals("SIGN_OUT")) {
+                        break;
+                    }
+                }catch(IOException e){
+                    System.out.println("Cannot read from this socket");
+                    break;
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Cannot open connection");
+        } finally{
+            closeResources();
+            GameClientHandler.gameClientsVector.remove(this); 
+            System.out.println("Client is disconnected.");
+        }
+    }*/
 
     public void setUserID(int userID) {
         this.userID = userID;
@@ -72,11 +106,31 @@ public class GameClientHandler extends Thread {
         System.out.println("Checking Player ID: " + c.userID);
         
         // If the given ID matches the userID, return the associated PrintStream
-        if (id == c.userID) {
+        if (id == c.userID) {   
             return c.printStream;
         }
     }
-    
+   
+    // If no client with the given ID is found, return null
+    System.out.println("No client found with ID: " + id);  // Debugging log
+    return null;
+}
+    public void sendRequest(String requset){
+        printStream.println(requset);
+        printStream.flush();
+    }
+    public static GameClientHandler getClientById(int id) {
+    // Iterate over all connected game clients
+    for (GameClientHandler c : gameClientsVector) {
+        // Print the userID for debugging purposes
+        System.out.println("Checking Player ID: " + c.userID);
+        
+        // If the given ID matches the userID, return the associated PrintStream
+        if (id == c.userID) {   
+            return c;
+        }
+    }
+   
     // If no client with the given ID is found, return null
     System.out.println("No client found with ID: " + id);  // Debugging log
     return null;

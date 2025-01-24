@@ -84,6 +84,15 @@ public class RequestHandler {
 
         return responseJson.toString(); // Return JSON response as a string
     }*/
+    public String updateScore(int id, int score){
+        try {            
+            String result = PlayerDAO.updateScore(id, score);
+            return result ;
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return "Database Error";
+        }  
+    }
     public String inGameHandle(int playerID, int player2Id, String btnId) {
     JSONObject responseJson = new JSONObject(); // Response JSON to be returned
 
@@ -96,9 +105,10 @@ public class RequestHandler {
         }
 
         // Get PrintStream for Player 2
-        PrintStream p2Ear = GameClientHandler.getClientEar(player2Id);
+//        PrintStream p2Ear = GameClientHandler.getClientEar(player2Id);
+        GameClientHandler p2=GameClientHandler.getClientById(player2Id);
 
-        if (p2Ear != null) {
+        if (p2 != null) {
             // Create the JSON object to send to Player 2
             JSONObject moveJson = new JSONObject();
             moveJson.put("requestType", "MOVE");
@@ -108,12 +118,8 @@ public class RequestHandler {
 
             // Send move JSON to Player 2
             System.out.println("Sending move from Player " + playerID + " to Player " + player2Id);
-            p2Ear.println(moveJson.toString());
-            p2Ear.flush();
-            p2Ear.println(moveJson.toString());
-            p2Ear.flush();
-            p2Ear.println(moveJson.toString());
-            p2Ear.flush();
+            p2.sendRequest(moveJson.toString());
+//            p2.flush();
             System.out.println("move sent");
 
             // Construct success response
