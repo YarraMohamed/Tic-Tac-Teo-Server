@@ -24,6 +24,7 @@ public class RequestRouter {
                 String req=requestHandler.signInHandle(username, password);
                 JSONObject reqJSONObject = new JSONObject(req);
                 gameClient.setUserID(reqJSONObject.getInt("Player_ID"));
+//                GameClientHandler.sendToAllUsers();
                 return req; 
             case "SIGN_UP":
                 return requestHandler.signUpHandle(username, email ,password) ;

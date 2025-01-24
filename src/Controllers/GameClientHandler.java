@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 
@@ -36,6 +38,7 @@ public class GameClientHandler extends Thread {
             bufferedReader = new BufferedReader(new InputStreamReader(gameClientSocket.getInputStream()));
             printStream = new PrintStream(gameClientSocket.getOutputStream());
             GameClientHandler.gameClientsVector.add(this);
+//            sendToAllUsers();
             start(); 
         } catch (IOException e) {
           e.printStackTrace();
@@ -126,7 +129,8 @@ public class GameClientHandler extends Thread {
         System.out.println("Checking Player ID: " + c.userID);
         
         // If the given ID matches the userID, return the associated PrintStream
-        if (id == c.userID) {   
+        if (id == c.userID) {  
+            System.out.println("Found client with ID  "+c.userID);
             return c;
         }
     }
@@ -136,7 +140,25 @@ public class GameClientHandler extends Thread {
     return null;
 }
 
-
+    public static void sendToAllUsers(){
+        Thread th= new Thread(()->{
+            while (true) {                
+                for(GameClientHandler c :gameClientsVector){
+                c.printStream.println("test");
+                c.printStream.flush();
+            }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) {
+                    System.out.println("Errror ::::::::::::::::::::::"+ex.getMessage());
+                    Logger.getLogger(GameClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+        }
+        );
+        th.start();
+    }
 
     private void closeResources() {
         try {

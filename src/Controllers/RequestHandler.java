@@ -107,7 +107,7 @@ public class RequestHandler {
         // Get PrintStream for Player 2
 //        PrintStream p2Ear = GameClientHandler.getClientEar(player2Id);
         GameClientHandler p2=GameClientHandler.getClientById(player2Id);
-
+        
         if (p2 != null) {
             // Create the JSON object to send to Player 2
             JSONObject moveJson = new JSONObject();
@@ -119,6 +119,8 @@ public class RequestHandler {
             // Send move JSON to Player 2
             System.out.println("Sending move from Player " + playerID + " to Player " + player2Id);
             p2.sendRequest(moveJson.toString());
+//            p2.sendRequest(moveJson.toString());
+
 //            p2.flush();
             System.out.println("move sent");
 
@@ -138,7 +140,9 @@ public class RequestHandler {
         responseJson.put("message", "An error occurred while processing the move: " + e.getMessage());
     }
 
-    return responseJson.toString(); // Return JSON response as a string
+    return responseJson.toString();  // Return JSON response as a string
+//    return "ignore";  // Return JSON response as a string
+
 }
 
 
