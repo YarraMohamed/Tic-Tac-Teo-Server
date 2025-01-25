@@ -45,12 +45,12 @@ public class StartServerController {
             
  
             // Access the controller of StopServerAndStatistics screen to set the serverInstance and the stage
-            StopServerAndStatisticsController controller = loader.getController();
-            controller.setServerInstance(serverInstance); // Pass the same instance of the server that was started so when closing you close the same instance
+            StopServerAndStatisticsController.getInstance().setServerInstance(serverInstance);
             
             
             Scene currentScene = ((Node) startServerEvent.getSource()).getScene();
-            controller.setStage((Stage) currentScene.getWindow()); // Pass the stage to the controller of StopServerAndStatistics to shut down the server on window close
+            // Pass the stage to the controller of StopServerAndStatistics to shut down the server on window close
+            StopServerAndStatisticsController.getInstance().setStage((Stage) currentScene.getWindow());
             
             currentScene.setRoot(stopServerAndStatisticsRoot);
         } catch(IOException e){
