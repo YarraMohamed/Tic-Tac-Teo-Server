@@ -12,12 +12,21 @@ import org.json.JSONObject;
 
 public class RequestHandler {
     
-    public String signInHandle(String name, String password){
+    public String signInHandle(String name, String password, GameClientHandler gameClientHandler){
         try {
             
             Player player = new Player(name,password);
             
             String result = PlayerDAO.signIn(player);
+            
+            JSONObject signInJsonResponse = new JSONObject(result);
+            String signInResponse = signInJsonResponse.optString("response"); 
+            
+            if (signInResponse.equals("LOGGED_IN")) {
+                int playerId = signInJsonResponse.optInt("Player_ID");
+                gameClientHandler.mapPlayerIdToClient(playerId);
+            }
+            
             return result ;
         } catch (SQLException ex) {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -25,12 +34,20 @@ public class RequestHandler {
         }  
     }
     
-    public String signUpHandle(String name, String email,String password){
+    public String signUpHandle(String name, String email,String password, GameClientHandler gameClientHandler){
         try {
             
             Player player = new Player(name,email,password);
             
             String result = PlayerDAO.signUp(player);
+            
+            JSONObject signInJsonResponse = new JSONObject(result);
+            String signInResponse = signInJsonResponse.optString("response"); 
+            
+            if (signInResponse.equals("LOGGED_IN")) {
+                int playerId = signInJsonResponse.optInt("Player_ID");
+                gameClientHandler.mapPlayerIdToClient(playerId);
+            }
             return result ;
         } catch (SQLException ex) {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,10 +159,6 @@ public class RequestHandler {
 }
 
 
-
-
-    
-
     public String getAvailablePlayersHandle(int currentPlayerID) {
         try {
             // Call DAO method to fetch the list of players excluding the current player
@@ -156,7 +169,6 @@ public class RequestHandler {
             return "Database Error";
         }
     }
-   
     public String userNameHandle(int playerID){
         try {
            
@@ -166,6 +178,26 @@ public class RequestHandler {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
             return "Database Error";
         }  
+    }
+
+            
+    public String handleGameRequest(JSONObject jsonReceived) {
+        
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("response", "GAME_REQUEST_SUCCESS");
+
+        int requestingPlayerId = jsonReceived.getInt("requestingPlayer_ID");
+        int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
+        
+        String requestingPlayerUsername = PlayerDAO.getPlayerUsernameById(requestingPlayerId);
+        GameClientHandler requestedPlayer = GameClientHandler.getGameClient(requestedPlayerId);
+        
+        if (requestedPlayer != null) {
+           return requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername);
+           
+        } else {
+            return "GAME_REQUEST_FAILED";
+        }
     }
 
 //public String getOnlinePlayersHandle(int currentPlayerID) {
