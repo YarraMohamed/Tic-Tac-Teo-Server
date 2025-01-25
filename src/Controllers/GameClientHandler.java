@@ -159,6 +159,7 @@ public class GameClientHandler extends Thread {
     }
     
     
+    
     public PrintStream getStream(GameClientHandler g){
         for(GameClientHandler client : gameClientsVector ){
             if(client == g){
@@ -201,5 +202,5 @@ public class GameClientHandler extends Thread {
         printStream.println(request);
         printStream.flush();
     }
-  
 }
+

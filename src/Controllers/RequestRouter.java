@@ -48,7 +48,7 @@ public class RequestRouter {
             case "REJECT" :
                 return requestHandler.handleRejection(jsonReceived);
             case "Accept" :
-                return requestHandler.handleAcceptiance(jsonReceived);
+                return requestHandler.handleAcceptance(jsonReceived);
             default:
                 return "Error: Invalid request type.";
         }

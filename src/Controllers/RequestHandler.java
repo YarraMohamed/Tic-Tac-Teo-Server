@@ -206,25 +206,37 @@ public class RequestHandler {
        
     }
     
-    public String handleAcceptiance(JSONObject jsonReceived) {
+public String handleAcceptance(JSONObject jsonReceived) {
+    JSONObject handlingGameRequestResponse = new JSONObject();
+    handlingGameRequestResponse.put("requestType", "GAME_REQUEST_ACCEPTED");
+    int requestingPlayerId = jsonReceived.getInt("requestingPlayer_ID");
+    int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
 
-        JSONObject handlingGameRequestResponse = new JSONObject();
-        handlingGameRequestResponse.put("requestType", "AcceptedNotificationAccepted");
-        int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
-        System.out.println("in handleReject playerID is "+requestedPlayerId);
-        GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
-        System.out.println("in handleReject requestedPlayer "+requestedPlayer);
+    GameClientHandler requestingPlayer = GameClientHandler.getClientHandler(requestingPlayerId);
+    GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
 
-        if (requestedPlayer != null) {
-           PrintStream stream = requestedPlayer.getStream(requestedPlayer);
-           System.out.println("in handleReject stream "+stream);
-           stream.println(handlingGameRequestResponse.toString());
-           return handlingGameRequestResponse.toString();
-        } else {
-            handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+    if (requestingPlayer != null && requestedPlayer != null) {
+        try {
+            // Add sender and receiver IDs to the JSON response
+            handlingGameRequestResponse.put("requestingPlayer_ID", requestingPlayerId);
+            handlingGameRequestResponse.put("requestedPlayer_ID", requestedPlayerId);
+
+            // Debug log the response
+            System.out.println("Sending to both players: " + handlingGameRequestResponse.toString());
+
+            // Send the response to both players
+            requestingPlayer.sendRequest(handlingGameRequestResponse.toString());
+            requestedPlayer.sendRequest(handlingGameRequestResponse.toString());
+
             return handlingGameRequestResponse.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-       
+    } else {
+        handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+        return handlingGameRequestResponse.toString();
     }
 
+    return handlingGameRequestResponse.toString();
+}
 }
