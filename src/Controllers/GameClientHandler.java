@@ -108,7 +108,32 @@ public class GameClientHandler extends Thread {
         JSONObject json = new JSONObject();
         json.put("requestType", "GAME_REQUEST");
         json.put("requestingPlayer_ID", requestingPlayerId);
-        json.put("requestingPlayerUsername", requestingPlayerUsername); 
+        json.put("requestingPlayerUsername", requestingPlayerUsername);
+        
+        System.out.println("Sending game request JSON: " + json.toString()); // log message  
+        return json.toString();
+    }
+    
+    
+    /*public String sendGameReject(int rejectingPlayerId, String rejectingPlayerUsername) {
+        System.out.println("Sending rejection from player ID: " + rejectingPlayerId);
+        System.out.println("Rejecting player's username: " + rejectingPlayerUsername);
+        JSONObject json = new JSONObject();
+        json.put("requestType", "GAME_REJECTED");
+        json.put("rejectingPlayer_ID", rejectingPlayerId);
+        json.put("rejectingPlayerUsername", rejectingPlayerUsername);
+        
+        System.out.println("Sending game reject JSON: " + json.toString()); // log message
+        return json.toString();
+    }*/
+    
+    
+    public String sendGameReject() {
+
+        JSONObject json = new JSONObject();
+        json.put("requestType", "GAME_REJECTED");
+
+        System.out.println("Sending game reject JSON: " + json.toString()); // log message
         return json.toString();
     }
     

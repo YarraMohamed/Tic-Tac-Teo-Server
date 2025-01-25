@@ -92,20 +92,87 @@ public class RequestHandler {
             
     public String handleGameRequest(JSONObject jsonReceived) {
         
+        //GameClientHandler.printVector();
+        
         JSONObject handlingGameRequestResponse = new JSONObject();
         handlingGameRequestResponse.put("response", "GAME_REQUEST_SUCCESS");
 
         int requestingPlayerId = jsonReceived.getInt("requestingPlayer_ID");
         int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
         
+        System.out.println("Requesting Player ID: " + requestingPlayerId); // log message
+        System.out.println("Requested Player ID: " + requestedPlayerId); // log message
+
+        
         String requestingPlayerUsername = PlayerDAO.getPlayerUsernameById(requestingPlayerId);
         GameClientHandler requestedPlayer = GameClientHandler.getGameClient(requestedPlayerId);
         
+        System.out.println("Received JSON in GAME_REQUEST: " + jsonReceived.toString()); // log message
+
         if (requestedPlayer != null) {
            return requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername);
+           //return handlingGameRequestResponse.toString();
            
         } else {
             return "GAME_REQUEST_FAILED";
+        }
+    }
+    
+    
+    /*public String handleGameReject (JSONObject jsonReceived) {
+        
+        System.out.println("Received JSON in GAME_REJECTED: " + jsonReceived); // log messages
+        
+        JSONObject handlingGameRejectResponse = new JSONObject();
+        handlingGameRejectResponse.put("response", "GAME_REJECT_SUCCESS");
+        
+        
+        int rejectingPlayerId = jsonReceived.getInt("rejectingPlayer_ID");
+        int rejectedPlayerId = jsonReceived.getInt("rejectedPlayer_ID");
+        
+        
+        System.out.println("Rejecting Player ID: " + rejectingPlayerId); // log message
+        System.out.println("Rejected Player ID: " + rejectedPlayerId); // log message
+        
+        String rejectingPlayerUsername = PlayerDAO.getPlayerUsernameById(rejectingPlayerId);
+
+        GameClientHandler rejectedPlayer = GameClientHandler.getGameClient(rejectedPlayerId);
+    
+        System.out.println("Received JSON in GAME_REJECTED: " + jsonReceived.toString()); // log message
+
+        if (rejectedPlayer != null) {
+           return rejectedPlayer.sendGameReject(rejectingPlayerId, rejectingPlayerUsername);
+        } else {
+            return "GAME_REJECTED_FAILED";
+        }
+    }*/
+    
+    
+    public String handleGameReject (JSONObject jsonReceived) {
+        
+        System.out.println("Received JSON in GAME_REJECTED: " + jsonReceived); // log messages
+        
+        JSONObject handlingGameRejectResponse = new JSONObject();
+        handlingGameRejectResponse.put("response", "GAME_REJECT_SUCCESS");
+        
+        
+        //int rejectingPlayerId = jsonReceived.getInt("rejectingPlayer_ID");
+        int rejectedPlayerId = jsonReceived.getInt("rejectedPlayer_ID");
+        
+        
+        //System.out.println("Rejecting Player ID: " + rejectingPlayerId); // log message
+        System.out.println("Rejected Player ID: " + rejectedPlayerId); // log message
+        
+        //String rejectingPlayerUsername = PlayerDAO.getPlayerUsernameById(rejectingPlayerId);
+
+        GameClientHandler rejectedPlayer = GameClientHandler.getGameClient(rejectedPlayerId);
+    
+        System.out.println("Received JSON in GAME_REJECTED: " + jsonReceived.toString()); // log message
+
+        if (rejectedPlayer != null) {
+           return rejectedPlayer.sendGameReject();
+        } else {
+            return "GAME_REJECTED_FAILED";
         }
     }
     
