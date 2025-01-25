@@ -147,12 +147,13 @@ public class GameClientHandler extends Thread {
     }
     
 
-    public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername) {
+    public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername,int requestedPlayerID) {
         
         JSONObject json = new JSONObject();
         json.put("requestType", "GAME_REQUEST");
         json.put("requestingPlayer_ID", requestingPlayerId);
         json.put("requestingPlayerUsername", requestingPlayerUsername);
+        json.put("requestedPlayerID",requestedPlayerID);
        
         return json.toString();
     }

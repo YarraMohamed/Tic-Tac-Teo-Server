@@ -168,18 +168,57 @@ public class RequestHandler {
 
         int requestingPlayerId = jsonReceived.getInt("requestingPlayer_ID");
         int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
-        
-        System.out.println("Requesting Player ID: " + requestingPlayerId); // log message
         System.out.println("Requested Player ID: " + requestedPlayerId); // log message
 
         String requestingPlayerUsername = PlayerDAO.getPlayerUsernameById(requestingPlayerId);
         GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
-        System.out.println("Received JSON in GAME_REQUEST: " + jsonReceived.toString()); // log message
 
         if (requestedPlayer != null) {
            PrintStream stream = requestedPlayer.getStream(requestedPlayer);
-           String message = requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername);
+           String message = requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername,requestedPlayerId);
            stream.println(message);
+           return handlingGameRequestResponse.toString();
+        } else {
+            handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+            return handlingGameRequestResponse.toString();
+        }
+       
+    }
+    
+    public String handleRejection(JSONObject jsonReceived) {
+
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("requestType", "rejectedNotificationAccepted");
+        int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
+        System.out.println("in handleReject playerID is "+requestedPlayerId);
+        GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
+        System.out.println("in handleReject requestedPlayer "+requestedPlayer);
+
+        if (requestedPlayer != null) {
+           PrintStream stream = requestedPlayer.getStream(requestedPlayer);
+           System.out.println("in handleReject stream "+stream);
+           stream.println(handlingGameRequestResponse.toString());
+           return handlingGameRequestResponse.toString();
+        } else {
+            handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+            return handlingGameRequestResponse.toString();
+        }
+       
+    }
+    
+    public String handleAcceptiance(JSONObject jsonReceived) {
+
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("requestType", "AcceptedNotificationAccepted");
+        int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
+        System.out.println("in handleReject playerID is "+requestedPlayerId);
+        GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
+        System.out.println("in handleReject requestedPlayer "+requestedPlayer);
+
+        if (requestedPlayer != null) {
+           PrintStream stream = requestedPlayer.getStream(requestedPlayer);
+           System.out.println("in handleReject stream "+stream);
+           stream.println(handlingGameRequestResponse.toString());
            return handlingGameRequestResponse.toString();
         } else {
             handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");

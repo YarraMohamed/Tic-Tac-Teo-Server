@@ -42,8 +42,13 @@ public class RequestRouter {
 //                int requestedPlayer_ID = jsonReceived.optInt("requestedPlayer_ID");
                 System.out.println("gone here");
                 return requestHandler.handleGameRequest(jsonReceived);
+                
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
+            case "REJECT" :
+                return requestHandler.handleRejection(jsonReceived);
+            case "Accept" :
+                return requestHandler.handleAcceptiance(jsonReceived);
             default:
                 return "Error: Invalid request type.";
         }
