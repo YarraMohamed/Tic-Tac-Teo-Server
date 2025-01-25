@@ -45,7 +45,7 @@ public class GameClientHandler extends Thread {
             bufferedReader = new BufferedReader(new InputStreamReader(gameClientSocket.getInputStream()));
             printStream = new PrintStream(gameClientSocket.getOutputStream());
             GameClientHandler.gameClientsVector.add(this); 
-            //System.out.println("Added to gameClientsVector: " + this); // log message
+            System.out.println("Added to gameClientsVector: " + this); // log message
             start(); 
         } catch (IOException e) {
           e.printStackTrace();
@@ -72,10 +72,10 @@ public class GameClientHandler extends Thread {
                 JSONObject jsonMessage = new JSONObject(message);
                 String requestType = jsonMessage.getString("requestType");
 
-                if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
+               /* if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
                     System.out.println("Broadcasting " + requestType + " message");
                     sendToAllPlayers(message);
-                }
+                }*/
 
                 // Process other request types
                 String response = RequestRouter.routeRequest(message, this);
@@ -85,8 +85,6 @@ public class GameClientHandler extends Thread {
 
                 // Check for sign out
                 if ("SIGN_OUT".equals(requestType)) {
-                    printStream.println("Loged OUT");
-                    printStream.flush();
                     break;
                 }
             } catch (IOException e) {
@@ -105,32 +103,7 @@ public class GameClientHandler extends Thread {
         System.out.println("Client disconnected.");
     }
 }
-    public void sendToAllPlayers(String message) {
-    try {
-        System.out.println("Sending to all players. Total clients: " + clientMap.size());
-//        for (Map.Entry<Integer, GameClientHandler> entry : clientMap.entrySet()) {
-//                    System.out.println("map => "+ entry.getValue().getName());
-//
-//            try {
-//                GameClientHandler client = entry.getValue();
-//                if (client != null && client.printStream != null) {
-//                    System.out.println("Sending to Player ID: " + entry.getKey());
-//                    client.printStream.println(message);
-//                    client.printStream.flush();
-//                }
-//            } catch (Exception clientEx) {
-//                System.err.println("Error sending to individual client: " + clientEx.getMessage());
-//            }
-//        }
-        for (GameClientHandler clinet:gameClientsVector) {
-            System.out.println("Vectoooor clinet => "+clinet.getName());
-            clinet.printStream.println(message);
-            clinet.printStream.flush();
-        }
-    } catch (Exception e) {
-        System.err.println("Global error in sendToAllPlayers: " + e.getMessage());
-    }
-}
+
     public void setId(int id){
         playerId2=id;
     }
@@ -180,15 +153,19 @@ public class GameClientHandler extends Thread {
         json.put("requestType", "GAME_REQUEST");
         json.put("requestingPlayer_ID", requestingPlayerId);
         json.put("requestingPlayerUsername", requestingPlayerUsername);
-        
-        System.out.println("Sending game request JSON: " + json.toString()); 
-        
+       
         return json.toString();
-        
-        /*printStream.println(json.toString());
-        printStream.flush();*/
     }
     
+    
+    public PrintStream getStream(GameClientHandler g){
+        for(GameClientHandler client : gameClientsVector ){
+            if(client == g){
+                return client.printStream;
+            }
+        }
+        return null;
+    }
 
     private void closeResources() {
         try {
@@ -218,12 +195,6 @@ public class GameClientHandler extends Thread {
          }    
         }).start();
    }
-
-    /*public static void printVector() {
-        for (GameClientHandler handler: GameClientHandler.gameClientsVector) {
-            System.out.println(handler.playerId);
-        }
-    }*/
 
     public void sendRequest(String request) {
         printStream.println(request);
