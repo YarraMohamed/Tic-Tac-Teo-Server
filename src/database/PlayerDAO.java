@@ -5,13 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class PlayerDAO {
     
     private static Connection con ;
     
-    public static String signUp(Player player) throws SQLException{
+    public static String signUp(Player player) throws SQLException {
         
         JSONObject json = new JSONObject();
   
@@ -38,12 +39,12 @@ public class PlayerDAO {
       PreparedStatement insertStatus = con.prepareStatement(
         "INSERT INTO PLAYERSTATUS(PLAYER_ID,ACTIVE,BUSY) VALUES (?,TRUE,FALSE)"
       );
-      
+
       insertStatus.setInt(1, generatedID);
       int result2 = insertStatus.executeUpdate();
 
       if (result1 > 0 && result2 > 0) {
-        json.put("response", "Success");
+        json.put("response", "LOGGED_IN");
         json.put("Player_ID", generatedID);
       }else{
          json.put("response", "Failed");
@@ -83,7 +84,7 @@ public class PlayerDAO {
         
         int result = insertStatus.executeUpdate();
         if(result > 0){
-             json.put("response", "Success");
+             json.put("response", "LOGGED_IN");
              json.put("Player_ID", playerID);
         } else {
             json.put("response", "Failed");
@@ -111,6 +112,29 @@ public class PlayerDAO {
             json.put("response", "Failed");
         }
         StopServerAndStatisticsController.notifyBarChart(); // Update bar chart when user signs out
+        return json.toString();
+    }
+    
+    public static String userName(int playerID) throws SQLException{
+        
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "SELECT NAME,SCORE FROM PLAYER WHERE ID=?"
+        );
+        insertStatus.setInt(1, playerID);
+        
+        ResultSet result = insertStatus.executeQuery();
+        
+        if(result.next()){
+             json.put("response", "Profile");
+             json.put("Name",result.getString("NAME"));
+             json.put("Score",result.getInt("SCORE"));
+        } else {
+            json.put("response", "Failed");
+        }
         return json.toString();
     }
     
@@ -148,6 +172,66 @@ public class PlayerDAO {
         
         return numberOfOfflinePlayers;
     }  
+    
+ 
+    public static String getPlayerUsernameById(int playerId) {
+
+        String playerUsername = ""; 
+        String query = "SELECT NAME FROM PLAYER WHERE ID = ? ";
+
+        try {
+            con = DatabaseConnection.getDBConnection();
+            try (PreparedStatement preparedStatement = con.prepareStatement(query)){
+                preparedStatement.setInt(1, playerId);   
+                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                        if (resultSet.next()) {
+                            playerUsername = resultSet.getString("NAME");
+                    } 
+                }
+            } 
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("Eroor while getting uername by id.");
+        }
+ 
+        return playerUsername;
+    }
+    
+    
+    public static String getPlayersListExcludingCurrent(int currentPlayerID) throws SQLException {
+        JSONObject json = new JSONObject();
+        JSONArray playersArray = new JSONArray();
+
+        // Get database connection
+        con = DatabaseConnection.getDBConnection();
+
+        // Query: Join PLAYERSTATUS with PLAYER table to get player names and only active players
+        String getPlayersQuery = "SELECT p.ID, p.NAME FROM PLAYERSTATUS ps " +
+                             "JOIN PLAYER p ON ps.PLAYER_ID = p.ID " +
+                             "WHERE ps.ACTIVE = TRUE AND p.ID != ?";  // Exclude current player
+    
+        // Prepare statement and execute the query
+        PreparedStatement preparedStatement = con.prepareStatement(getPlayersQuery);
+        preparedStatement.setInt(1, currentPlayerID); // Exclude current player
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Iterate over the result set and add players to the JSON array
+        while (resultSet.next()) {
+            JSONObject playerJson = new JSONObject();
+            playerJson.put("ID", resultSet.getInt("ID"));
+            playerJson.put("NAME", resultSet.getString("NAME"));
+            playersArray.put(playerJson);
+        }
+
+        // Put players array into the response JSON
+        json.put("response", "List_Of_Players");
+        json.put("players", playersArray);
+
+        // Return the response as a string
+        return json.toString();
+    }
+    
+    
 }
       
 
