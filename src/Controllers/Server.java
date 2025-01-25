@@ -28,6 +28,7 @@ public class Server {
                 try {
                     while (isRunning) { 
                         Socket gameClientSocket = serverSocket.accept();
+                        System.out.println("new client =>   "+gameClientSocket);
                         new GameClientHandler(gameClientSocket);
                 } 
             } catch(IOException e) {
@@ -65,4 +66,5 @@ public class Server {
             System.out.println("Error stopping server on port " + port);
         }
     }
+
 }    

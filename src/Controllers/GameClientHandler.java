@@ -11,15 +11,20 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 
 public class GameClientHandler extends Thread {
     
     private Socket gameClientSocket;
-    private static Vector<GameClientHandler> gameClientsVector = new Vector<>();
+    public static Vector<GameClientHandler> gameClientsVector = new Vector<>();
     private BufferedReader bufferedReader;
     private PrintStream printStream;
+    private int playerId;
+    private int playerId2;
+    static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>(); // concurrent map is better in multi-threading applications
     private int playerId; 
     private static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>();
     private int userID;
@@ -28,6 +33,7 @@ public class GameClientHandler extends Thread {
     public GameClientHandler(Socket gameClientSocket) {
         this.gameClientSocket = gameClientSocket;
         initializeStreams();
+        System.out.println("constructoor => "+this.getName());
     }
     
 
@@ -41,7 +47,8 @@ public class GameClientHandler extends Thread {
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(gameClientSocket.getInputStream()));
             printStream = new PrintStream(gameClientSocket.getOutputStream());
-            GameClientHandler.gameClientsVector.add(this);  
+            GameClientHandler.gameClientsVector.add(this); 
+            System.out.println("Added to gameClientsVector: " + this); 
             start(); 
         } catch (IOException e) {
           e.printStackTrace();
@@ -49,32 +56,56 @@ public class GameClientHandler extends Thread {
         }
     }
     
+
+    
     private void handleClient() {
-        try{
-            String message;
-            int playerId;
-            while(!gameClientSocket.isClosed()){
-                try{
-                    message = bufferedReader.readLine();
-                    if(message==null){
-                        if(gameClientSocket.isClosed()){
-                            break;
-                        }
-                        continue;
-                    }
-                    String response = RequestRouter.routeRequest(message, this);
-                    printStream.println(response);
-                    printStream.flush();
-                    JSONObject request = new JSONObject(message);
-                    if (request.getString("requestType").equals("SIGN_OUT")) {
-                        playerId = request.getInt("Player_ID");
-                        break;
-                    }
-                }catch(IOException e){
-                    System.out.println("Cannot read from this socket");
+    try {
+        String message;
+        while (!gameClientSocket.isClosed()) {
+            try {
+                message = bufferedReader.readLine();
+                if (message == null) {
+                    if (gameClientSocket.isClosed()) break;
+                    continue;
+                }
+
+                System.out.println("Received message: " + message);
+
+                // Specific handling for MOVE and GAME_REQUEST
+                JSONObject jsonMessage = new JSONObject(message);
+                String requestType = jsonMessage.getString("requestType");
+
+               /* if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
+                    System.out.println("Broadcasting " + requestType + " message");
+                    sendToAllPlayers(message);
+                }*/
+
+                // Process other request types
+                String response = RequestRouter.routeRequest(message, this);
+                System.out.println("Response: " + response);
+                printStream.println(response);
+                printStream.flush();
+
+                // Check for sign out
+                if ("SIGN_OUT".equals(requestType)) {
                     break;
                 }
+            } catch (IOException e) {
+                System.out.println("Socket read error: " + e.getMessage());
+                break;
             }
+        }
+    } catch (Exception e) {
+        System.out.println("Unexpected error in handleClient: " + e.getMessage());
+    } finally {
+        closeResources();
+        GameClientHandler.gameClientsVector.remove(this);
+        if (playerId > 0) {
+            GameClientHandler.clientMap.remove(playerId);
+        }
+        System.out.println("Client disconnected.");
+    }
+}
             
         }catch(Exception e){
              System.out.println("Cannot open connection");
@@ -103,40 +134,46 @@ public class GameClientHandler extends Thread {
     }
 
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setId(int id){
+        playerId2=id;
+    }
+    public void mapPlayerIdToClient(int playerId){
+        this.playerId = playerId;
+        clientMap.put(playerId, this);
+//        gameClientsVector.add(this);
+        System.out.println("Registered client with player ID: " + playerId); // log message
     }
     
-    public static PrintStream getClientEar(int id) {
-    // Iterate over all connected game clients
-    for (GameClientHandler c : gameClientsVector) {
-        // Print the userID for debugging purposes
-        System.out.println("Checking Player ID: " + c.userID);
-        
-        // If the given ID matches the userID, return the associated PrintStream
-        if (id == c.userID) {   
-            return c.printStream;
+    
+    public static GameClientHandler getGameClient(int playerId) {
+        for (GameClientHandler client: gameClientsVector) {
+            if (client.playerId == playerId) {
+                System.out.println("found client "+client.playerId+"    "+client.playerId2);
+                return client;
+            }
         }
+        return null; // should I really return null? Doesn't the concurrent map not accept nulls?
     }
-   
-    // If no client with the given ID is found, return null
-    System.out.println("No client found with ID: " + id);  // Debugging log
-    return null;
-}
-    public void sendRequest(String requset){
-        printStream.println(requset);
-        printStream.flush();
-    }
-    public static GameClientHandler getClientById(int id) {
-    // Iterate over all connected game clients
-    for (GameClientHandler c : gameClientsVector) {
-        // Print the userID for debugging purposes
-        System.out.println("Checking Player ID: " + c.userID);
+    public static GameClientHandler getClientHandler(int playerId){
+//        clientMap.forEach((key,value)->{
+//            if (key==playerId) {
+//                System.out.println("Found ID");
+//                client=value;
+//                return;
+//            }
+//        });
         
-        // If the given ID matches the userID, return the associated PrintStream
-        if (id == c.userID) {   
-            return c;
+        return clientMap.get(playerId);
+    }
+    public static GameClientHandler getGameClient2(int playerId) {
+        for (GameClientHandler client: gameClientsVector) {
+            System.out.println("check with  "+client.playerId2);
+            if (client.playerId2 == playerId) {
+                System.out.println("found client "+client.playerId+"    "+client.playerId2);
+                return client;
+            }
         }
+        return null; // should I really return null? Doesn't the concurrent map not accept nulls?
     }
    
     // If no client with the given ID is found, return null
@@ -149,10 +186,20 @@ public class GameClientHandler extends Thread {
         JSONObject json = new JSONObject();
         json.put("requestType", "GAME_REQUEST");
         json.put("requestingPlayer_ID", requestingPlayerId);
-        json.put("requestingPlayerUsername", requestingPlayerUsername); 
+        json.put("requestingPlayerUsername", requestingPlayerUsername);
+       
         return json.toString();
     }
     
+    
+    public PrintStream getStream(GameClientHandler g){
+        for(GameClientHandler client : gameClientsVector ){
+            if(client == g){
+                return client.printStream;
+            }
+        }
+        return null;
+    }
 
     private void closeResources() {
         try {
@@ -181,6 +228,12 @@ public class GameClientHandler extends Thread {
              System.out.print("");
          }    
         }).start();
-   }
-    
+
+
+    public void sendRequest(String request) {
+        printStream.println(request);
+        printStream.flush();
+    }
+  
+
 }

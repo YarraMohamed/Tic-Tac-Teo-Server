@@ -141,28 +141,7 @@ public class PlayerDAO {
     }
     
     
-    public static String updateScore(int playerId,int score) throws SQLException{
-        JSONObject json = new JSONObject();
-        
-        con = DatabaseConnection.getDBConnection();
-        
-        PreparedStatement insertStatus = con.prepareStatement(
-           "UPDATE PLAYER set SCORE =SCORE +? WHERE ID=?"
-        );
-        insertStatus.setInt(1, score);
-        insertStatus.setInt(2, playerId);
-        
-        int result = insertStatus.executeUpdate();
-        
-        if(result>0){
-             json.put("response", "Success");
-             
-        } else {
-            json.put("response", "Failed");
-        }
-        return json.toString();
-
-    }
+    
     
     // Method to get the number of players who are currently active (online)
     public static int getNumberOfOnlinePlayers() throws SQLException {
@@ -283,11 +262,35 @@ public class PlayerDAO {
     }
 
     // Put players array into the response JSON
+    json.put("response", "List_Of_Players");
     json.put("players", playersArray);
 
     // Return the response as a string
     return json.toString();
 }
+ 
+ public static String getPlayerUsernameById(int playerId) {
+
+        String playerUsername = ""; 
+        String query = "SELECT NAME FROM PLAYER WHERE ID = ? ";
+
+        try {
+            con = DatabaseConnection.getDBConnection();
+            try (PreparedStatement preparedStatement = con.prepareStatement(query)){
+                preparedStatement.setInt(1, playerId);   
+                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                        if (resultSet.next()) {
+                            playerUsername = resultSet.getString("NAME");
+                    } 
+                }
+            } 
+        } catch(SQLException e) {
+            e.printStackTrace();
+            System.out.println("Eroor while getting uername by id.");
+        }
+ 
+        return playerUsername;
+    }
     
 //    public static List<Player> getOnlinePlayers(int currentPlayerID) {
 //    List<Player> onlinePlayers = new ArrayList<>();
