@@ -1,5 +1,6 @@
 package Controllers;
 
+
 import org.json.JSONObject;
 
 public class RequestRouter {
@@ -17,12 +18,12 @@ public class RequestRouter {
         
         int player2ID= jsonReceived.optInt("Player2_ID");
         String btnId=jsonReceived.optString("btn");
-
+        
          RequestHandler requestHandler = new RequestHandler();
       
         switch (requestType) {
             case "SIGN_IN":
-                String req=requestHandler.signInHandle(username, password);
+                String req=requestHandler.signInHandle(username, password,gameClient);
                 JSONObject reqJSONObject = new JSONObject(req);
                 gameClient.setId(reqJSONObject.getInt("Player_ID"));
                 return req; 
@@ -31,15 +32,18 @@ public class RequestRouter {
             case "SIGN_OUT":
                 return requestHandler.signOutHandle(playerID);
             case "GET_AVAILABLE_PLAYERS":
-                return requestHandler.getAvailablePlayersHandle(playerID);    
+                return requestHandler.getAvailablePlayersHandle(playerID);
+               // case "GET_ONLINE_PLAYERS":
+                //return requestHandler.getOnlinePlayersHandle(playerID);
             case "USER_NAME":
-                 return requestHandler.userNameHandle(playerID);  
+                return requestHandler.userNameHandle(playerID);
             case "GAME_REQUEST":
+//                int requestingPlayer_ID = jsonReceived.optInt("requestingPlayer_ID");
+//                int requestedPlayer_ID = jsonReceived.optInt("requestedPlayer_ID");
+                System.out.println("gone here");
                 return requestHandler.handleGameRequest(jsonReceived);
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
-            case "GET_AVAILABLE_PLAYERS":
-                return requestHandler.getAvailablePlayersHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }
