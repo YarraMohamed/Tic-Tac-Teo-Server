@@ -22,6 +22,7 @@ public class GameClientHandler extends Thread {
     private PrintStream printStream;
     private int playerId; 
     private static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>();
+    private int userID;
     
     
     public GameClientHandler(Socket gameClientSocket) {
@@ -48,7 +49,6 @@ public class GameClientHandler extends Thread {
         }
     }
     
-
     private void handleClient() {
         try{
             String message;
@@ -101,7 +101,48 @@ public class GameClientHandler extends Thread {
         }
         return null; 
     }
-            
+
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+    
+    public static PrintStream getClientEar(int id) {
+    // Iterate over all connected game clients
+    for (GameClientHandler c : gameClientsVector) {
+        // Print the userID for debugging purposes
+        System.out.println("Checking Player ID: " + c.userID);
+        
+        // If the given ID matches the userID, return the associated PrintStream
+        if (id == c.userID) {   
+            return c.printStream;
+        }
+    }
+   
+    // If no client with the given ID is found, return null
+    System.out.println("No client found with ID: " + id);  // Debugging log
+    return null;
+}
+    public void sendRequest(String requset){
+        printStream.println(requset);
+        printStream.flush();
+    }
+    public static GameClientHandler getClientById(int id) {
+    // Iterate over all connected game clients
+    for (GameClientHandler c : gameClientsVector) {
+        // Print the userID for debugging purposes
+        System.out.println("Checking Player ID: " + c.userID);
+        
+        // If the given ID matches the userID, return the associated PrintStream
+        if (id == c.userID) {   
+            return c;
+        }
+    }
+   
+    // If no client with the given ID is found, return null
+    System.out.println("No client found with ID: " + id);  // Debugging log
+    return null;
+}
 
     public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername) {
         

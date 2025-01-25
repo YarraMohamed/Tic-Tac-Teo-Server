@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -138,6 +140,30 @@ public class PlayerDAO {
         return json.toString();
     }
     
+    
+    public static String updateScore(int playerId,int score) throws SQLException{
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "UPDATE PLAYER set SCORE =SCORE +? WHERE ID=?"
+        );
+        insertStatus.setInt(1, score);
+        insertStatus.setInt(2, playerId);
+        
+        int result = insertStatus.executeUpdate();
+        
+        if(result>0){
+             json.put("response", "Success");
+             
+        } else {
+            json.put("response", "Failed");
+        }
+        return json.toString();
+
+    }
+    
     // Method to get the number of players who are currently active (online)
     public static int getNumberOfOnlinePlayers() throws SQLException {
         int numberOfOnlinePlayers = 0;
@@ -230,8 +256,59 @@ public class PlayerDAO {
         // Return the response as a string
         return json.toString();
     }
+  
+ public static String getPlayersListExcludingCurrent(int currentPlayerID) throws SQLException {
+    JSONObject json = new JSONObject();
+    JSONArray playersArray = new JSONArray();
+
+    // Get database connection
+    con = DatabaseConnection.getDBConnection();
+
+    // Query: Join PLAYERSTATUS with PLAYER table to get player names and only active players
+    String getPlayersQuery = "SELECT p.ID, p.NAME FROM PLAYERSTATUS ps " +
+                             "JOIN PLAYER p ON ps.PLAYER_ID = p.ID " +
+                             "WHERE ps.ACTIVE = TRUE AND p.ID != ?";  // Exclude current player
     
+    // Prepare statement and execute the query
+    PreparedStatement preparedStatement = con.prepareStatement(getPlayersQuery);
+    preparedStatement.setInt(1, currentPlayerID); // Exclude current player
+    ResultSet resultSet = preparedStatement.executeQuery();
+
+    // Iterate over the result set and add players to the JSON array
+    while (resultSet.next()) {
+        JSONObject playerJson = new JSONObject();
+        playerJson.put("ID", resultSet.getInt("ID"));
+        playerJson.put("NAME", resultSet.getString("NAME"));
+        playersArray.put(playerJson);
+    }
+
+    // Put players array into the response JSON
+    json.put("players", playersArray);
+
+    // Return the response as a string
+    return json.toString();
+}
     
+//    public static List<Player> getOnlinePlayers(int currentPlayerID) {
+//    List<Player> onlinePlayers = new ArrayList<>();
+//    
+//    try (Connection conn = DatabaseConnection.getDBConnection()) {
+//        String query = "SELECT ID, NAME FROM PLAYERSTATUS WHERE ACTIVE = 1 AND ID != ?"
+//;
+//        PreparedStatement stmt = conn.prepareStatement(query);
+//        stmt.setInt(1, currentPlayerID);
+//        
+//        ResultSet rs = stmt.executeQuery();
+//        
+//        while (rs.next()) {
+//            onlinePlayers.add(new Player(rs.getString("ID"), rs.getString("NAME")));
+//        }
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//    }
+//    
+//    return onlinePlayers;
+//}
+   
 }
       
-
