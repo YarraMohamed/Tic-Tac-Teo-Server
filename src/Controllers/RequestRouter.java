@@ -22,7 +22,7 @@ public class RequestRouter {
       
         switch (requestType) {
             case "SIGN_IN":
-                String req=requestHandler.signInHandle(username, password);
+                String req=requestHandler.signInHandle(username, password,gameClient);
                 JSONObject reqJSONObject = new JSONObject(req);
                 gameClient.setId(reqJSONObject.getInt("Player_ID"));
                 return req; 
@@ -38,8 +38,6 @@ public class RequestRouter {
                 return requestHandler.handleGameRequest(jsonReceived);
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
-            case "GET_AVAILABLE_PLAYERS":
-                return requestHandler.getAvailablePlayersHandle(playerID);
             default:
                 return "Error: Invalid request type.";
         }

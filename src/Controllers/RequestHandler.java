@@ -185,7 +185,7 @@ public class RequestHandler {
         }
        
     }
-
+/*
     public String getAvailablePlayersHandle(int currentPlayerID) {
         try {
             // Call DAO method to fetch the list of players excluding the current player
@@ -205,7 +205,7 @@ public class RequestHandler {
             Logger.getLogger(RequestHandler.class.getName()).log(Level.SEVERE, null, ex);
             return "Database Error";
         }  
-    }
+    }*/
 
 //public String getOnlinePlayersHandle(int currentPlayerID) {
 //    // Fetch only online players except the current player
