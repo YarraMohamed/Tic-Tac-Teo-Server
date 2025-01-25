@@ -214,6 +214,8 @@ public class GameClientHandler extends Thread {
              Iterator<GameClientHandler> iterator = gameClientsVector.iterator();
             while (iterator.hasNext()) {
                 GameClientHandler client = iterator.next();
+                client.printStream.println("SERVER_DOWN");
+                client.printStream.flush();
                 client.closeResources();
                 iterator.remove(); 
                 System.out.println("Client removed.");
