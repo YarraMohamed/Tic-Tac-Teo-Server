@@ -28,6 +28,7 @@ public class Server {
                 try {
                     while (isRunning) { 
                         Socket gameClientSocket = serverSocket.accept();
+                        System.out.println("new client =>   "+gameClientSocket);
                         new GameClientHandler(gameClientSocket);
                 } 
             } catch(IOException e) {

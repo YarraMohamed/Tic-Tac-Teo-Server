@@ -30,6 +30,7 @@ public class GameClientHandler extends Thread {
     public GameClientHandler(Socket gameClientSocket) {
         this.gameClientSocket = gameClientSocket;
         initializeStreams();
+        System.out.println("constructoor => "+this.getName());
     }
     
 
@@ -55,66 +56,80 @@ public class GameClientHandler extends Thread {
 
     
     private void handleClient() {
-        try{
-            String message;
-            int playerId;
-            while(!gameClientSocket.isClosed()){
-                try{
-                    message = bufferedReader.readLine();
-                    if(message==null){
-                        if(gameClientSocket.isClosed()){
-                            break;
-                        }
-                        continue;
-                    }
-                    if (message.contains("MOVE")||message.contains("GAME_REQUEST")) {
-                        System.out.println("moooooooooooooooooooooooooooooove"+message);
-                        sendToAllPlayers(message);
-                        continue;
-                    }
-                    String response = RequestRouter.routeRequest(message, this);
-                    System.out.println("Response in handle clinet "+response);
-                    printStream.println(response);
+    try {
+        String message;
+        while (!gameClientSocket.isClosed()) {
+            try {
+                message = bufferedReader.readLine();
+                if (message == null) {
+                    if (gameClientSocket.isClosed()) break;
+                    continue;
+                }
+
+                System.out.println("Received message: " + message);
+
+                // Specific handling for MOVE and GAME_REQUEST
+                JSONObject jsonMessage = new JSONObject(message);
+                String requestType = jsonMessage.getString("requestType");
+
+                if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
+                    System.out.println("Broadcasting " + requestType + " message");
+                    sendToAllPlayers(message);
+                }
+
+                // Process other request types
+                String response = RequestRouter.routeRequest(message, this);
+                System.out.println("Response: " + response);
+                printStream.println(response);
+                printStream.flush();
+
+                // Check for sign out
+                if ("SIGN_OUT".equals(requestType)) {
+                    printStream.println("Loged OUT");
                     printStream.flush();
-                    JSONObject request = new JSONObject(message);
-                    if (request.getString("requestType").equals("SIGN_OUT")) {
-                        playerId = request.getInt("Player_ID");
-                        break;
-                    }
-                }catch(IOException e){
-                    System.out.println("Cannot read from this socket");
                     break;
                 }
+            } catch (IOException e) {
+                System.out.println("Socket read error: " + e.getMessage());
+                break;
             }
-            
-        }catch(Exception e){
-             System.out.println("Cannot open connection");
-        } finally{
-            closeResources();
-            GameClientHandler.gameClientsVector.remove(this); 
-            GameClientHandler.clientMap.remove(playerId);
-            System.out.println("Client is disconnected.");
         }
-       
+    } catch (Exception e) {
+        System.out.println("Unexpected error in handleClient: " + e.getMessage());
+    } finally {
+        closeResources();
+        GameClientHandler.gameClientsVector.remove(this);
+        if (playerId > 0) {
+            GameClientHandler.clientMap.remove(playerId);
+        }
+        System.out.println("Client disconnected.");
     }
+}
     public void sendToAllPlayers(String message) {
-    System.out.println("Total clients in map: " + clientMap.size());
-    clientMap.forEach((key, value) -> {
-            try {
-                System.out.println("Attempting to send to Player: " + key);
-                PrintStream s = value.printStream;
-                if (s != null) {
-                    s.println(message);
-                    s.flush();
-                    System.out.println("Message sent to Player: " + key);
-                } else {
-                    System.out.println("PrintStream is null for Player: " + key);
-                }
-            } catch (Exception e) {
-                System.out.println("Error sending message to Player " + key + ": " + e.getMessage());
-            }
-        });
-    
+    try {
+        System.out.println("Sending to all players. Total clients: " + clientMap.size());
+//        for (Map.Entry<Integer, GameClientHandler> entry : clientMap.entrySet()) {
+//                    System.out.println("map => "+ entry.getValue().getName());
+//
+//            try {
+//                GameClientHandler client = entry.getValue();
+//                if (client != null && client.printStream != null) {
+//                    System.out.println("Sending to Player ID: " + entry.getKey());
+//                    client.printStream.println(message);
+//                    client.printStream.flush();
+//                }
+//            } catch (Exception clientEx) {
+//                System.err.println("Error sending to individual client: " + clientEx.getMessage());
+//            }
+//        }
+        for (GameClientHandler clinet:gameClientsVector) {
+            System.out.println("Vectoooor clinet => "+clinet.getName());
+            clinet.printStream.println(message);
+            clinet.printStream.flush();
+        }
+    } catch (Exception e) {
+        System.err.println("Global error in sendToAllPlayers: " + e.getMessage());
+    }
 }
     public void setId(int id){
         playerId2=id;

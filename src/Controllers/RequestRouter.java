@@ -15,8 +15,7 @@ public class RequestRouter {
         String password = jsonReceived.optString("password");
         String email = jsonReceived.optString("email");
         int playerID = jsonReceived.optInt("Player_ID");
-        int requestingPlayer_ID = jsonReceived.optInt("requestingPlayer_ID");
-        int requestedPlayer_ID = jsonReceived.optInt("requestedPlayer_ID");
+        
         int player2ID= jsonReceived.optInt("Player2_ID");
         String btnId=jsonReceived.optString("btn");
         
@@ -39,6 +38,8 @@ public class RequestRouter {
             case "USER_NAME":
                 return requestHandler.userNameHandle(playerID);
             case "GAME_REQUEST":
+//                int requestingPlayer_ID = jsonReceived.optInt("requestingPlayer_ID");
+//                int requestedPlayer_ID = jsonReceived.optInt("requestedPlayer_ID");
                 System.out.println("gone here");
                 return requestHandler.handleGameRequest(jsonReceived);
             case "MOVE":
