@@ -25,6 +25,9 @@ public class GameClientHandler extends Thread {
     private int playerId;
     private int playerId2;
     static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>(); // concurrent map is better in multi-threading applications
+//    private int playerId; 
+//    private static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>();
+    // private int userID;
     
     
     public GameClientHandler(Socket gameClientSocket) {
@@ -71,11 +74,6 @@ public class GameClientHandler extends Thread {
                 // Specific handling for MOVE and GAME_REQUEST
                 JSONObject jsonMessage = new JSONObject(message);
                 String requestType = jsonMessage.getString("requestType");
-
-               /* if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
-                    System.out.println("Broadcasting " + requestType + " message");
-                    sendToAllPlayers(message);
-                }*/
 
                 // Process other request types
                 String response = RequestRouter.routeRequest(message, this);
@@ -145,7 +143,6 @@ public class GameClientHandler extends Thread {
         }
         return null; // should I really return null? Doesn't the concurrent map not accept nulls?
     }
-    
 
     public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername,int requestedPlayerID) {
         
@@ -186,6 +183,8 @@ public class GameClientHandler extends Thread {
              Iterator<GameClientHandler> iterator = gameClientsVector.iterator();
             while (iterator.hasNext()) {
                 GameClientHandler client = iterator.next();
+                client.printStream.println("SERVER_DOWN");
+                client.printStream.flush();
                 client.closeResources();
                 iterator.remove(); 
                 System.out.println("Client removed.");
@@ -195,7 +194,6 @@ public class GameClientHandler extends Thread {
              System.out.print("");
          }    
         }).start();
-   }
 
     public void sendRequest(String request) {
         printStream.println(request);

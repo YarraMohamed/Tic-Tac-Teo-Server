@@ -45,9 +45,12 @@ public class RequestRouter {
                 
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
+            case "UPDATE_SCORE":
+                int score=jsonReceived.getInt("score");
+                return requestHandler.updateScore(playerID, score);
             case "REJECT" :
                 return requestHandler.handleRejection(jsonReceived);
-            case "Accept" :
+            case "ACCEPT" :
                 return requestHandler.handleAcceptiance(jsonReceived);
             default:
                 return "Error: Invalid request type.";

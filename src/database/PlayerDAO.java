@@ -235,7 +235,31 @@ public class PlayerDAO {
  
         return playerUsername;
     }
+
     
+   
+     public static String updateScore(int playerId,int score) throws SQLException{
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "UPDATE PLAYER set SCORE =SCORE + ? WHERE ID=?"
+        );
+        insertStatus.setInt(1, score);
+        insertStatus.setInt(2, playerId);
+        
+        int result = insertStatus.executeUpdate();
+        
+        if(result>0){
+             json.put("response", "SCORE_UPDATED");
+             
+        } else {
+            json.put("response", "SCORE_ERROR");
+        }
+        return json.toString();
+    }
+
 //    public static List<Player> getOnlinePlayers(int currentPlayerID) {
 //    List<Player> onlinePlayers = new ArrayList<>();
 //    
@@ -256,6 +280,6 @@ public class PlayerDAO {
 //    
 //    return onlinePlayers;
 //}
-    
+
 }
       

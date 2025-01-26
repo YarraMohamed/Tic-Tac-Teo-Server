@@ -11,3 +11,4 @@ derby.properties
 
 
 hs_err_pid8752.log
+*.log
