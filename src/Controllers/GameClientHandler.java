@@ -72,11 +72,6 @@ public class GameClientHandler extends Thread {
                 JSONObject jsonMessage = new JSONObject(message);
                 String requestType = jsonMessage.getString("requestType");
 
-               /* if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
-                    System.out.println("Broadcasting " + requestType + " message");
-                    sendToAllPlayers(message);
-                }*/
-
                 // Process other request types
                 String response = RequestRouter.routeRequest(message, this);
                 System.out.println("Response: " + response);
@@ -186,6 +181,8 @@ public class GameClientHandler extends Thread {
              Iterator<GameClientHandler> iterator = gameClientsVector.iterator();
             while (iterator.hasNext()) {
                 GameClientHandler client = iterator.next();
+                client.printStream.println("SERVER_DOWN");
+                client.printStream.flush();
                 client.closeResources();
                 iterator.remove(); 
                 System.out.println("Client removed.");

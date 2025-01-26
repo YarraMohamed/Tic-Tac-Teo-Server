@@ -236,26 +236,28 @@ public class PlayerDAO {
         return playerUsername;
     }
     
-//    public static List<Player> getOnlinePlayers(int currentPlayerID) {
-//    List<Player> onlinePlayers = new ArrayList<>();
-//    
-//    try (Connection conn = DatabaseConnection.getDBConnection()) {
-//        String query = "SELECT ID, NAME FROM PLAYERSTATUS WHERE ACTIVE = 1 AND ID != ?"
-//;
-//        PreparedStatement stmt = conn.prepareStatement(query);
-//        stmt.setInt(1, currentPlayerID);
-//        
-//        ResultSet rs = stmt.executeQuery();
-//        
-//        while (rs.next()) {
-//            onlinePlayers.add(new Player(rs.getString("ID"), rs.getString("NAME")));
-//        }
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    }
-//    
-//    return onlinePlayers;
-//}
     
+   
+     public static String updateScore(int playerId,int score) throws SQLException{
+        JSONObject json = new JSONObject();
+        
+        con = DatabaseConnection.getDBConnection();
+        
+        PreparedStatement insertStatus = con.prepareStatement(
+           "UPDATE PLAYER set SCORE =SCORE + ? WHERE ID=?"
+        );
+        insertStatus.setInt(1, score);
+        insertStatus.setInt(2, playerId);
+        
+        int result = insertStatus.executeUpdate();
+        
+        if(result>0){
+             json.put("response", "SCORE_UPDATED");
+             
+        } else {
+            json.put("response", "SCORE_ERROR");
+        }
+        return json.toString();
+    }
 }
       
