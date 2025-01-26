@@ -140,7 +140,6 @@ public class GameClientHandler extends Thread {
         }
         return null; // should I really return null? Doesn't the concurrent map not accept nulls?
     }
-    
 
     public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername,int requestedPlayerID) {
         

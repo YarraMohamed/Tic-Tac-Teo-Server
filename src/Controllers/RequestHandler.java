@@ -215,6 +215,7 @@ public class RequestHandler {
        
     }
     
+    
     public String handleAcceptiance(JSONObject jsonReceived) {
 
         JSONObject handlingGameRequestResponse = new JSONObject();
