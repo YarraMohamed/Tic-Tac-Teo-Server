@@ -195,7 +195,6 @@ public class GameClientHandler extends Thread {
          }    
         }).start();
 
-    }
     public void sendRequest(String request) {
         printStream.println(request);
         printStream.flush();

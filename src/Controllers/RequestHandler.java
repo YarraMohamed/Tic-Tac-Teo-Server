@@ -184,6 +184,7 @@ public class RequestHandler {
         }
        
     }
+
     public String updateScore(int playerID, int score) {
         try {            
             String result = PlayerDAO.updateScore(playerID, score);
@@ -198,6 +199,11 @@ public class RequestHandler {
 
         JSONObject handlingGameRequestResponse = new JSONObject();
         handlingGameRequestResponse.put("requestType", "rejectedNotification");
+    
+    public String handleRejection(JSONObject jsonReceived) {
+
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("requestType", "rejectedNotificationAccepted");
         int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
         System.out.println("in handleReject playerID is "+requestedPlayerId);
         GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
@@ -214,6 +220,7 @@ public class RequestHandler {
         }
        
     }
+    
     
     public String handleAcceptiance(JSONObject jsonReceived) {
 

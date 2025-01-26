@@ -235,7 +235,7 @@ public class PlayerDAO {
  
         return playerUsername;
     }
-    
+
     
    
      public static String updateScore(int playerId,int score) throws SQLException{
@@ -259,5 +259,27 @@ public class PlayerDAO {
         }
         return json.toString();
     }
+
+//    public static List<Player> getOnlinePlayers(int currentPlayerID) {
+//    List<Player> onlinePlayers = new ArrayList<>();
+//    
+//    try (Connection conn = DatabaseConnection.getDBConnection()) {
+//        String query = "SELECT ID, NAME FROM PLAYERSTATUS WHERE ACTIVE = 1 AND ID != ?"
+//;
+//        PreparedStatement stmt = conn.prepareStatement(query);
+//        stmt.setInt(1, currentPlayerID);
+//        
+//        ResultSet rs = stmt.executeQuery();
+//        
+//        while (rs.next()) {
+//            onlinePlayers.add(new Player(rs.getString("ID"), rs.getString("NAME")));
+//        }
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//    }
+//    
+//    return onlinePlayers;
+//}
+
 }
       
