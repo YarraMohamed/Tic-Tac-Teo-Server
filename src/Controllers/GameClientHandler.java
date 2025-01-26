@@ -27,7 +27,7 @@ public class GameClientHandler extends Thread {
     static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>(); // concurrent map is better in multi-threading applications
 //    private int playerId; 
 //    private static Map<Integer, GameClientHandler> clientMap = new ConcurrentHashMap<>();
-    private int userID;
+    // private int userID;
     
     
     public GameClientHandler(Socket gameClientSocket) {
@@ -48,7 +48,7 @@ public class GameClientHandler extends Thread {
             bufferedReader = new BufferedReader(new InputStreamReader(gameClientSocket.getInputStream()));
             printStream = new PrintStream(gameClientSocket.getOutputStream());
             GameClientHandler.gameClientsVector.add(this); 
-            System.out.println("Added to gameClientsVector: " + this); 
+            System.out.println("Added to gameClientsVector: " + this); // log message
             start(); 
         } catch (IOException e) {
           e.printStackTrace();
@@ -74,11 +74,6 @@ public class GameClientHandler extends Thread {
                 // Specific handling for MOVE and GAME_REQUEST
                 JSONObject jsonMessage = new JSONObject(message);
                 String requestType = jsonMessage.getString("requestType");
-
-               /* if ("MOVE".equals(requestType) || "GAME_REQUEST".equals(requestType)) {
-                    System.out.println("Broadcasting " + requestType + " message");
-                    sendToAllPlayers(message);
-                }*/
 
                 // Process other request types
                 String response = RequestRouter.routeRequest(message, this);
@@ -106,33 +101,6 @@ public class GameClientHandler extends Thread {
         System.out.println("Client disconnected.");
     }
 }
-            
-//        }catch(Exception e){
-//             System.out.println("Cannot open connection");
-//        } finally{
-//            closeResources();
-//            GameClientHandler.gameClientsVector.remove(this); 
-//            GameClientHandler.clientMap.remove(playerId);
-//            System.out.println("Client is disconnected.");
-//        }
-       
-    
-    
-//    public void mapPlayerIdToClient(int playerId){
-//        this.playerId = playerId;
-//        clientMap.put(playerId, this);
-//    }
-    
-    
-//    public static GameClientHandler getGameClient(int playerId) {
-//        for (GameClientHandler client: gameClientsVector) {
-//            if (client.playerId == playerId) {
-//                return client;
-//            }
-//        }
-//        return null; 
-//    }
-
 
     public void setId(int id){
         playerId2=id;
@@ -176,12 +144,13 @@ public class GameClientHandler extends Thread {
         return null; // should I really return null? Doesn't the concurrent map not accept nulls?
     }
 
-    public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername) {
+    public String sendGameRequest(int requestingPlayerId, String requestingPlayerUsername,int requestedPlayerID) {
         
         JSONObject json = new JSONObject();
         json.put("requestType", "GAME_REQUEST");
         json.put("requestingPlayer_ID", requestingPlayerId);
         json.put("requestingPlayerUsername", requestingPlayerUsername);
+        json.put("requestedPlayerID",requestedPlayerID);
        
         return json.toString();
     }
@@ -232,5 +201,4 @@ public class GameClientHandler extends Thread {
         printStream.flush();
     }
   
-
 }

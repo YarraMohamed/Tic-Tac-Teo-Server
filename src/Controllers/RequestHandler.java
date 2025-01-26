@@ -25,6 +25,7 @@ public class RequestHandler {
             if (signInResponse.equals("LOGGED_IN")) {
                 int playerId = signInJsonResponse.optInt("Player_ID");
                 gameClientHandler.mapPlayerIdToClient(playerId);
+                //System.out.println(GameClientHandler.clientMap);
             }
             
             return result ;
@@ -155,28 +156,26 @@ public class RequestHandler {
         responseJson.put("response", "Error");
         responseJson.put("message", "An error occurred while processing the move: " + e.getMessage());
     }
+
     return responseJson.toString();  // Return JSON response as a string
 //    return "ignore";  // Return JSON response as a string
 
 }
     public String handleGameRequest(JSONObject jsonReceived) {
-        System.out.println("handle request game " );
+
         JSONObject handlingGameRequestResponse = new JSONObject();
         handlingGameRequestResponse.put("response", "GAME_REQUEST_SUCCESS");
 
         int requestingPlayerId = jsonReceived.getInt("requestingPlayer_ID");
         int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
-        
-        System.out.println("Requesting Player ID: " + requestingPlayerId); // log message
         System.out.println("Requested Player ID: " + requestedPlayerId); // log message
 
         String requestingPlayerUsername = PlayerDAO.getPlayerUsernameById(requestingPlayerId);
         GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
-        System.out.println("Received JSON in GAME_REQUEST: " + jsonReceived.toString()); // log message
 
         if (requestedPlayer != null) {
            PrintStream stream = requestedPlayer.getStream(requestedPlayer);
-           String message =requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername);
+           String message = requestedPlayer.sendGameRequest(requestingPlayerId, requestingPlayerUsername,requestedPlayerId);
            stream.println(message);
            return handlingGameRequestResponse.toString();
         } else {
@@ -185,7 +184,6 @@ public class RequestHandler {
         }
        
     }
-
     public String updateScore(int playerID, int score) {
         try {            
             String result = PlayerDAO.updateScore(playerID, score);
@@ -195,6 +193,48 @@ public class RequestHandler {
             return "Database Error";
         }  
     
+    }
+    public String handleRejection(JSONObject jsonReceived) {
+
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("requestType", "rejectedNotification");
+        int requestedPlayerId = jsonReceived.getInt("requestedPlayer_ID");
+        System.out.println("in handleReject playerID is "+requestedPlayerId);
+        GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(requestedPlayerId);
+        System.out.println("in handleReject requestedPlayer "+requestedPlayer);
+
+        if (requestedPlayer != null) {
+           PrintStream stream = requestedPlayer.getStream(requestedPlayer);
+           System.out.println("in handleReject stream "+stream);
+           stream.println(handlingGameRequestResponse.toString());
+           return handlingGameRequestResponse.toString();
+        } else {
+            handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+            return handlingGameRequestResponse.toString();
+        }
+       
+    }
+    
+    public String handleAcceptiance(JSONObject jsonReceived) {
+
+        JSONObject handlingGameRequestResponse = new JSONObject();
+        handlingGameRequestResponse.put("requestType", "ACCEPTED");
+        int senderId = jsonReceived.getInt("senderID");
+        int reciverId=jsonReceived.getInt("reciverID");
+        handlingGameRequestResponse.put("p2ID", senderId);
+
+//        System.out.println("in handleReject playerID is "+requestedPlayerId);
+        GameClientHandler requestedPlayer = GameClientHandler.getClientHandler(reciverId);
+        System.out.println("in handleReject requestedPlayer "+requestedPlayer);
+
+        if (requestedPlayer != null) {
+            requestedPlayer.sendRequest(handlingGameRequestResponse.toString());
+           return "DONE";
+        } else {
+            handlingGameRequestResponse.put("response", "GAME_REQUEST_FAILED");
+            return "PLAYER_OFF";
+        }
+       
     }
 
 }

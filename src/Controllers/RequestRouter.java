@@ -1,5 +1,6 @@
 package Controllers;
 
+
 import org.json.JSONObject;
 
 public class RequestRouter {
@@ -17,7 +18,7 @@ public class RequestRouter {
         
         int player2ID= jsonReceived.optInt("Player2_ID");
         String btnId=jsonReceived.optString("btn");
-
+        
          RequestHandler requestHandler = new RequestHandler();
       
         switch (requestType) {
@@ -31,16 +32,26 @@ public class RequestRouter {
             case "SIGN_OUT":
                 return requestHandler.signOutHandle(playerID);
             case "GET_AVAILABLE_PLAYERS":
-                return requestHandler.getAvailablePlayersHandle(playerID);    
+                return requestHandler.getAvailablePlayersHandle(playerID);
+               // case "GET_ONLINE_PLAYERS":
+                //return requestHandler.getOnlinePlayersHandle(playerID);
             case "USER_NAME":
-                 return requestHandler.userNameHandle(playerID);  
+                return requestHandler.userNameHandle(playerID);
             case "GAME_REQUEST":
+//                int requestingPlayer_ID = jsonReceived.optInt("requestingPlayer_ID");
+//                int requestedPlayer_ID = jsonReceived.optInt("requestedPlayer_ID");
+                System.out.println("gone here");
                 return requestHandler.handleGameRequest(jsonReceived);
+                
             case "MOVE":
                 return requestHandler.inGameHandle( playerID, player2ID, btnId);
             case "UPDATE_SCORE":
                 int score=jsonReceived.getInt("score");
                 return requestHandler.updateScore(playerID, score);
+            case "REJECT" :
+                return requestHandler.handleRejection(jsonReceived);
+            case "ACCEPT" :
+                return requestHandler.handleAcceptiance(jsonReceived);
             default:
                 return "Error: Invalid request type.";
         }
